@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="mainScreenViewModel"
+            type="uz.javokhirjambulov.pomodoro.screen.MainScreenViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:background="@drawable/rounded"
+        android:orientation="vertical"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_baseline_remove_24">
+
+        </ImageView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/menu"
+            android:textSize="20sp"
+            android:textStyle="bold">
+
+        </TextView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="99"
+                android:text="@string/pomodoro_duration_min"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/pomodoroDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@{mainScreenViewModel.pomodoroTimeString}"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/pomodoroSeekbar"
+            style="@style/Widget.AppCompat.SeekBar.Discrete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="10"
+            android:progress="2" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="99"
+                android:text="@string/break_duration_min"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/breakDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@{mainScreenViewModel.breakTimeString}"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/breakSeekbar"
+            style="@style/Widget.AppCompat.SeekBar.Discrete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="5"
+            android:progress="0" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="99"
+                android:text="@string/long_break_duration_min"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/longBreakDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@{mainScreenViewModel.longBreakTimeString}"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/longBreakSeekbar"
+            style="@style/Widget.AppCompat.SeekBar.Discrete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="5"
+            android:progress="0" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="99"
+                android:text="@string/sessions"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/sessions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@{mainScreenViewModel.sessionsString}"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/sessionsSeekbar"
+            style="@style/Widget.AppCompat.SeekBar.Discrete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="5"
+            android:progress="0" />
+
+
+    </LinearLayout>
+
+</layout>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/mLogOut"
+        android:orderInCategory="0"
+        android:title="@string/log_out"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/mSort"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_sort"
+        android:title="@string/sort">
+
+        <menu>
+            <group android:checkableBehavior="single">
+
+
+            <item
+                android:id="@+id/mNewFirst"
+                android:title="@string/newest_first" />
+            <item
+                android:id="@+id/mOldFirst"
+                android:title="@string/oldest_first"
+                android:checked="true"/>
+            <item
+                android:id="@+id/mTitle"
+                android:title="@string/title" />
+
+            </group>
+        </menu>
+    </item>
+</menu>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/aboutLinerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_baseline_info"
+                android:tint="@color/blue"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:text="@string/about_the_app"
+                android:textSize="15sp"
+                android:textColor="@color/blue"/>
+
+        </LinearLayout>
+        <ImageView
+            android:id="@+id/about_application_icon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="10dp"
+            android:src="@mipmap/ic_launcher"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/aboutLinerLayout" />
+
+        <TextView
+            android:id="@+id/about_application_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/app_name"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/about_application_icon" />
+
+        <TextView
+            android:id="@+id/about_application_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/version_1_0_0"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/about_application_name" />
+
+        <TextView
+            android:id="@+id/view_source_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="16dp"
+            android:text="@string/view_source_code_at_github"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/about_application_version" />
+
+        <TextView
+            android:id="@+id/send_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="16dp"
+            android:text="@string/send_feedback"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view_source_code" />
+
+        <TextView
+            android:id="@+id/app_intro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="16dp"
+            android:text="@string/app_intro"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/send_feedback" />
+
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="10dp"
+            android:background="#c0c0c0"
+            app:layout_constraintTop_toBottomOf="@id/app_intro" />
+
+        <TextView
+            android:id="@+id/txtxcloud"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/cloud_backup"
+            android:textColor="@color/blue"
+            android:textSize="15sp"
+            app:layout_constraintTop_toBottomOf="@id/view" />
+
+        <LinearLayout
+            android:id="@+id/cloudLinerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/txtxcloud">
+
+            <LinearLayout
+                android:id="@+id/cloudStorage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_cloud"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/import_export_from_cloud"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

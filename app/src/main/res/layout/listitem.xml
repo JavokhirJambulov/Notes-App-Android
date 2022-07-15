@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="5dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="8dp"
+    app:cardMaxElevation="5dp"
+    android:orientation="vertical">
+
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_margin="15dp"
+    android:padding="10dp"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <TextView
+        android:id="@+id/textViewStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/note_type"
+        android:textColor="#EA6B6B"
+        android:textSize="18sp"
+        android:gravity="start"
+        android:layout_weight="0.9"/>
+
+        <TextView
+            android:id="@+id/textViewDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:maxLines="1"
+            android:text="@string/date"
+            android:textSize="14sp"
+            android:layout_weight="0.1"/>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/note_title"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:ellipsize="end"
+        android:maxLines="1"/>
+
+    <TextView
+        android:id="@+id/textViewDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/note_description"
+        android:ellipsize="end"
+        android:maxLines="2"/>
+
+</LinearLayout>
+
+</androidx.cardview.widget.CardView>

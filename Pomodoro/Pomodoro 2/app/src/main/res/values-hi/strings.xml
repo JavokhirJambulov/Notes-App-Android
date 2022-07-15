@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Pomodoro</string>
+    <string name="play">Play</string>
+    <string name="channel_name" translatable="false">uz.javokhirjambulov.pomodoro.screen</string>
+    <string name="channel_description">PomodroApp</string>
+    <string name="start">Start</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="skip">Skip</string>
+    <string name="continue_button">Continue</string>
+    <string name="stop">Stop</string>
+    <string name="quit">Quit</string>
+    <string name="about">About</string>
+    <string name="view_source_code_at_github">View source code at GitHub</string>
+    <string name="send_feedback">Send feedback</string>
+    <string name="troubleshooting">Troubleshooting</string>
+    <string name="tutorial">Tutorial</string>
+    <string name="version_1_0_0">Version 1.0.0</string>
+
+    <string name="intro_avoid_distractions">"Avoid distractions"</string>
+    <string name="intro_avoid_distractions_description">"Keep your work on track using timed sessions handled by the app."</string>
+    <string name="intro_clear_mind">"Clear your mind"</string>
+    <string name="intro_clear_mind_description">"Reward yourself with short breaks and get refreshed."</string>
+    <string name="intro_get_started">"Get started"</string>
+    <string name="intro_get_started_description">"Stay focused, get rid of procrastination and improve your productivity."</string>
+    <string name="app_intro">App intro</string>
+    <string name="timer_type_pomodoro">Currently in Pomodoro</string>
+    <string name="timer_type_break">Currently in Break</string>
+    <string name="timer_type_completed">Congratulations Session completed</string>
+    <string name="timer_type_long_break">Currently in Long Break</string>
+    <string name="pomodoro_in_progress_notification">Pomodoro in progress</string>
+    <string name="break_in_progress_notification">Break in progress</string>
+    <string name="long_break_in_progress_notification">Long Break in progress</string>
+    <string name="pomodoro_is_paused_notification">Pomodoro is paused</string>
+    <string name="break_is_paused_notification">Break is paused</string>
+    <string name="long_break_is_paused_notification">Long Break is paused</string>
+    <string name="continue_notification">Continue?</string>
+    <string name="session_completed">Session Completed</string>
+    <string name="pomodoro">Pomodoro</string>
+    <string name="menu">Menu</string>
+    <string name="pomodoro_duration_min">Pomodoro duration(min)</string>
+    <string name="break_duration_min">Break duration(min)</string>
+    <string name="long_break_duration_min">Long Break duration(min)</string>
+    <string name="sessions">Sessions</string>
+
+
+</resources>

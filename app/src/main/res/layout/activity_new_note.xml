@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_back"
+                app:layout_constraintBottom_toBottomOf="@+id/tvDateTime"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/black" />
+
+            <TextView
+                android:id="@+id/tvDateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:padding="5sp"
+                android:text="@string/date"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toStartOf="@+id/btnOK"
+                app:layout_constraintStart_toEndOf="@+id/btnCancel"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/btnOK"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/donecheck"
+                app:layout_constraintBottom_toBottomOf="@+id/tvDateTime"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/black" />
+
+            <EditText
+                android:id="@+id/editTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10sp"
+                android:ems="10"
+                android:gravity="bottom"
+                android:hint="@string/title_hint"
+                android:inputType="textPersonName|textMultiLine|textCapSentences"
+                android:maxLines="2"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:scrollbars="vertical"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvDateTime" />
+
+            <EditText
+                android:id="@+id/editDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:ems="0"
+                android:gravity="bottom"
+                android:hint="@string/description_hint"
+                android:inputType="textShortMessage|textMultiLine|textCapSentences"
+                android:maxLines="10"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:scrollbars="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTitle" />
+
+
+            <CheckBox
+                android:id="@+id/checkBoxImportant"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="40dp"
+                android:text="@string/important_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/checkBoxIdea" />
+
+            <CheckBox
+                android:id="@+id/checkBoxIdea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/idea_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.149"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editDescription" />
+
+            <CheckBox
+                android:id="@+id/checkBoxTodo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/todo_text"
+                app:layout_constraintEnd_toStartOf="@+id/checkBoxImportant"
+                app:layout_constraintStart_toEndOf="@+id/checkBoxIdea"
+                app:layout_constraintTop_toTopOf="@+id/checkBoxIdea" />
+
+            <!--    <Button-->
+            <!--        android:id="@+id/btnCancel"-->
+            <!--        android:layout_width="wrap_content"-->
+            <!--        android:layout_height="wrap_content"-->
+            <!--        android:layout_marginStart="50dp"-->
+            <!--        android:layout_marginTop="15dp"-->
+            <!--        android:layout_marginBottom="20dp"-->
+
+            <!--        android:text="@string/cancel_button"-->
+
+
+            <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--        app:layout_constraintStart_toStartOf="parent"-->
+            <!--        app:layout_constraintTop_toBottomOf="@+id/checkBoxIdea"-->
+            <!--        app:layout_constraintVertical_bias="0.028" />-->
+
+            <!--<Button
+                android:id="@+id/btnOK"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="50dp"
+                android:text="@string/ok_button"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/btnCancel"
+                app:layout_constraintTop_toTopOf="@+id/btnCancel" />-->
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</layout>
