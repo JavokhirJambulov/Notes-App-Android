@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
@@ -20,33 +21,35 @@ import java.util.*
 
 class NewNoteActivity : AppCompatActivity() {
 
-    private lateinit var uid: String
-    private lateinit var user: FirebaseUser
-    private lateinit var myRef: DatabaseReference
-    private lateinit var database: FirebaseDatabase
+//    private lateinit var uid: String
+//    private lateinit var user: FirebaseUser
+//    private lateinit var myRef: DatabaseReference
+//    private lateinit var database: FirebaseDatabase
     private lateinit var binding:ActivityNewNoteBinding
+    private lateinit var noteViewModel:NoteViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
+        noteViewModel = ViewModelProvider(this)[NoteViewModel::class.java]
         binding = DataBindingUtil.setContentView(
             this,
             R.layout.activity_new_note
         )
         binding.lifecycleOwner = this
 
-        user = Firebase.auth.currentUser!!
-        user?.let {
-
-            uid = user.uid
-        }
-        database = Firebase.database
-        myRef = database.getReference("Notes")
+//        user = Firebase.auth.currentUser!!
+//        user?.let {
+//
+//            uid = user.uid
+//        }
+        /*database = Firebase.database
+        myRef = database.getReference("Notes")*/
+        val currentTime =System.currentTimeMillis()
         val outputDataFormat= SimpleDateFormat("dd-MM-yyyy", Locale.US)
         val calendar: Calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
+        calendar.timeInMillis = currentTime
         binding.tvDateTime.text =outputDataFormat.format(calendar.time)
         // Handle the cancel button
         binding.btnCancel.setOnClickListener {
@@ -56,7 +59,7 @@ class NewNoteActivity : AppCompatActivity() {
 
         binding.btnOK.setOnClickListener {
             // Create a new note
-            val newNote = Note(binding.tvDateTime.text.toString())
+            val newNote = Note(currentTime.toString())
 
             // Set its properties to match the
             // user's entries on the form
@@ -69,7 +72,8 @@ class NewNoteActivity : AppCompatActivity() {
             newNote.important = binding.checkBoxImportant.isChecked
 
 
-            myRef.child(uid).child(newNote.noteId).setValue(newNote)
+//            myRef.child(uid).child(newNote.noteId).setValue(newNote)
+            noteViewModel.insert(newNote,applicationContext)
             //val callingActivity=activity as MainActivity?
             //callingActivity?.addNote(newNote)
             startMainActivity()

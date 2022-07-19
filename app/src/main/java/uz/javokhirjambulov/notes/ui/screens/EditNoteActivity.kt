@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -31,30 +32,32 @@ import java.util.*
 class EditNoteActivity : AppCompatActivity() {
 
     private lateinit var value: String
-    private lateinit var uid: String
-    private lateinit var user: FirebaseUser
-    private lateinit var myRef: DatabaseReference
-    private lateinit var database: FirebaseDatabase
+//    private lateinit var uid: String
+//    private lateinit var user: FirebaseUser
+//    private lateinit var myRef: DatabaseReference
+//    private lateinit var database: FirebaseDatabase
     private lateinit var binding: ActivityNewNoteBinding
+    private lateinit var noteViewModel:NoteViewModel
     private var editNote: Note? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i("Tag", "Oncreate of editnote")
+        noteViewModel = ViewModelProvider(this)[NoteViewModel::class.java]
         val b = intent.extras
         value = "" // or other values
 
         if (b != null)
             value = b.getString("key").toString()
 
-        user = Firebase.auth.currentUser!!
+     /*   user = Firebase.auth.currentUser!!
         user.let {
 
             uid = user.uid
         }
         database = Firebase.database
-        myRef = database.getReference("Notes")
+        myRef = database.getReference("Notes")*/
         Log.i("Tag", value)
         sendNoteSelected(value)
 
@@ -63,21 +66,20 @@ class EditNoteActivity : AppCompatActivity() {
             R.layout.activity_new_note
         )
         binding.lifecycleOwner = this
-        Log.i("Tag", "This is note title: "+editNote?.title.toString())
 
 
-        editNote?.noteId.let { it1 ->
-            Log.d("TAG","in edit note => ${System.currentTimeMillis()}");
-            if (it1 != null) {
-                Log.i("Tag", "This is note title: "+editNote?.title.toString())
-                binding.editTitle.setText(editNote?.title)
-                binding.editDescription.setText(editNote?.description)
-                binding.checkBoxIdea.isChecked = editNote?.idea == true
-                binding.checkBoxTodo.isChecked = editNote?.todo == true
-                binding.checkBoxImportant.isChecked = editNote?.important == true
-
-            }
-        }
+//        editNote?.noteId.let { it1 ->
+//            Log.d("TAG","in edit note => ${System.currentTimeMillis()}");
+//            if (it1 != null) {
+//                Log.i("Tag", "This is note title: "+editNote?.title.toString())
+//                binding.editTitle.setText(editNote?.title)
+//                binding.editDescription.setText(editNote?.description)
+//                binding.checkBoxIdea.isChecked = editNote?.idea == true
+//                binding.checkBoxTodo.isChecked = editNote?.todo == true
+//                binding.checkBoxImportant.isChecked = editNote?.important == true
+//
+//            }
+//        }
         // Handle the cancel button
         binding.btnCancel.setOnClickListener {
             editNote?.let { it1 -> startShowActivity(it1.noteId) }
@@ -97,12 +99,10 @@ class EditNoteActivity : AppCompatActivity() {
             newNote?.todo = binding.checkBoxTodo.isChecked
             newNote?.important = binding.checkBoxImportant.isChecked
 
-            newNote?.noteId.let { it1 ->
-                if (it1 != null) {
-                    myRef.child(uid).child(it1).setValue(newNote)
-                    // Quit the dialog
-                    startShowActivity(it1)
-                }
+            newNote?.let { it1 ->
+                noteViewModel.update(it1,applicationContext)
+                // Quit the dialog
+                startShowActivity(it1.noteId)
             }
 
 
@@ -125,27 +125,28 @@ class EditNoteActivity : AppCompatActivity() {
     private fun sendNoteSelected(value: String) {
 
 
-        myRef.child(uid.toString()).child(value.toString()).addValueEventListener(object :
-                ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val note = Note(value)
-                    note?.description = dataSnapshot.child("description").getValue<String>()
-                    note?.title = dataSnapshot.child("title").getValue<String>()
-                    note?.idea = dataSnapshot.child("idea").getValue<Boolean>()
-                    note?.important = dataSnapshot.child("important").getValue<Boolean>()
-                    note?.todo = dataSnapshot.child("todo").getValue<Boolean>()
-
-                    Log.i("Tag", note?.description.toString())
-                    setNote(note)
-
-                }
-
-
-                override fun onCancelled(error: DatabaseError) {
-                    // Failed to read value
-                    Log.w("TAG", "Failed to read value.", error.toException())
-                }
-                })
+//        myRef.child(uid.toString()).child(value.toString()).addValueEventListener(object :
+//                ValueEventListener {
+//                override fun onDataChange(dataSnapshot: DataSnapshot) {
+//                    val note = Note(value)
+//                    note?.description = dataSnapshot.child("description").getValue<String>()
+//                    note?.title = dataSnapshot.child("title").getValue<String>()
+//                    note?.idea = dataSnapshot.child("idea").getValue<Boolean>()
+//                    note?.important = dataSnapshot.child("important").getValue<Boolean>()
+//                    note?.todo = dataSnapshot.child("todo").getValue<Boolean>()
+//
+//                    Log.i("Tag", note?.description.toString())
+//                    setNote(note)
+//
+//                }
+//
+//
+//                override fun onCancelled(error: DatabaseError) {
+//                    // Failed to read value
+//                    Log.w("TAG", "Failed to read value.", error.toException())
+//                }
+//                })
+        noteViewModel.getNoteWithID(value,applicationContext)?.let { setNote(it) }
 
     }
 

@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -28,11 +30,12 @@ import uz.javokhirjambulov.notes.ui.screens.ShowNoteActivity
 
 
 class DeletedNotesActivity : AppCompatActivity(), NoteAdapter.ItemListener {
-    private lateinit var myRef: DatabaseReference
-    private lateinit var auth: FirebaseAuth
+//    private lateinit var myRef: DatabaseReference
+//    private lateinit var auth: FirebaseAuth
     private val adapter: NoteAdapter by lazy {
         NoteAdapter(this)
     }
+    private lateinit var deletedNoteViewModel:DeletedNotesViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,40 +45,45 @@ class DeletedNotesActivity : AppCompatActivity(), NoteAdapter.ItemListener {
 ////        actionBar?.setDisplayHomeAsUpEnabled(true)
 //        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 //        supportActionBar?.title = getString(R.string.deletedNotes)
+        deletedNoteViewModel = ViewModelProvider(this)[DeletedNotesViewModel::class.java]
 
-        auth = Firebase.auth
-        val database = Firebase.database
-        myRef = database.getReference("DeletedNotes")
+//        auth = Firebase.auth
+//        val database = Firebase.database
+//        myRef = database.getReference("DeletedNotes")
         val recyclerViewDeletedNotes = findViewById<RecyclerView>(R.id.recyclerViewDeletedNotes)
 
 
         recyclerViewDeletedNotes.adapter = adapter
-        myRef.child(auth.currentUser?.uid.toString()).addValueEventListener(object :
-                ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val noteList1: MutableList<Note> = mutableListOf()
-
-                for (postSnapshot in dataSnapshot.children) {
-                    //getNote = Note()
-                    val noteId = postSnapshot.key.toString()
-                    val note = Note(noteId)
-                    note.description = postSnapshot.child("description").getValue<String>()
-                    note.title = postSnapshot.child("title").getValue<String>()
-                    note.idea = postSnapshot.child("idea").getValue<Boolean>()
-                    note.important = postSnapshot.child("important").getValue<Boolean>()
-                    note.todo = postSnapshot.child("todo").getValue<Boolean>()
-
-                    noteList1.add(note)
-                }
-                adapter.setNote(noteList1)
-            }
-
-
-            override fun onCancelled(error: DatabaseError) {
-                // Failed to read value
-                Log.w("TAG", "Failed to read value.", error.toException())
-            }
-        })
+//        myRef.child(auth.currentUser?.uid.toString()).addValueEventListener(object :
+//                ValueEventListener {
+//            override fun onDataChange(dataSnapshot: DataSnapshot) {
+//                val noteList1: MutableList<Note> = mutableListOf()
+//
+//                for (postSnapshot in dataSnapshot.children) {
+//                    //getNote = Note()
+//                    val noteId = postSnapshot.key.toString()
+//                    val note = Note(noteId)
+//                    note.description = postSnapshot.child("description").getValue<String>()
+//                    note.title = postSnapshot.child("title").getValue<String>()
+//                    note.idea = postSnapshot.child("idea").getValue<Boolean>()
+//                    note.important = postSnapshot.child("important").getValue<Boolean>()
+//                    note.todo = postSnapshot.child("todo").getValue<Boolean>()
+//
+//                    noteList1.add(note)
+//                }
+//                adapter.setNote(noteList1)
+//            }
+//
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                // Failed to read value
+//                Log.w("TAG", "Failed to read value.", error.toException())
+//            }
+//        })
+        deletedNoteViewModel.getAllNotes(applicationContext).observe(this, Observer { lisOfNotes ->
+            lisOfNotes?.let {
+                adapter.setNote(it)
+            } })
 
         val swipeGesture = object : SwipeGesture(this) {
 
@@ -144,14 +152,16 @@ class DeletedNotesActivity : AppCompatActivity(), NoteAdapter.ItemListener {
 
     private fun deleteFromDeletedNotesDatabase(deletedNote: Note) {
 
-        myRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId).removeValue()
+//        myRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId).removeValue()
+        deletedNoteViewModel.deleteById(deletedNote.noteId,applicationContext)
     }
+
 
     private fun showNote(noteToShow: Int) {
         val intent = Intent(this, ShowNoteActivity::class.java)
         val b = Bundle()
         b.putString("key", adapter.getItem(noteToShow).noteId) //Your id
-
+        b.putBoolean("deletedNotesDatabase",true)
         intent.putExtras(b) //Put your id to your next Intent
 
         startActivity(intent)

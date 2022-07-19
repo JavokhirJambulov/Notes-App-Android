@@ -19,8 +19,8 @@ interface NotesDatabaseDao {
     /**
      * Selects and returns the row that matches the supplied noteId, which is our key.
      */
-    @Query("SELECT * from notes_table WHERE noteId = :key")
-    suspend fun get(key: String): Note?
+   /* @Query("SELECT * from notes_table WHERE noteId = :key")
+    suspend fun get(key: String): Note?*/
     /**
      * Deletes all values from the table.
      *
@@ -28,6 +28,8 @@ interface NotesDatabaseDao {
      */
     @Query("DELETE FROM notes_table")
     suspend fun clear()
+    @Query("delete from notes_table where noteId = :id")
+    fun deleteById(id: String)
     /**
      * Selects and returns all rows in the table,
      *
@@ -39,5 +41,5 @@ interface NotesDatabaseDao {
      * Selects and returns the note with given noteId.
      */
     @Query("SELECT * from notes_table WHERE noteId = :key")
-    fun getNoteWithId(key: String): LiveData<Note>
+    fun getNoteWithId(key: String): Note
 }

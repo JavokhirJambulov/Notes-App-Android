@@ -26,6 +26,9 @@ class Settings : AppCompatActivity(){
 
             startActivity(emailIntent)
         }
+        binding.impExpCloud.setOnClickListener{
+
+        }
 //        binding.appIntro.setOnClickListener {
 //            // show app intro
 //            val i = Intent(this, MainIntroActivity::class.java)

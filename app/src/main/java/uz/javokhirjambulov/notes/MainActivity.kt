@@ -20,6 +20,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -37,8 +39,10 @@ import uz.javokhirjambulov.notes.commons.Constants
 import uz.javokhirjambulov.notes.database.Note
 import uz.javokhirjambulov.notes.login.LoginActivity
 import uz.javokhirjambulov.notes.ui.DeletedNotesActivity
-import uz.javokhirjambulov.notes.ui.screens.EditNoteActivity
+import uz.javokhirjambulov.notes.ui.DeletedNotesViewModel
+import uz.javokhirjambulov.notes.ui.Settings
 import uz.javokhirjambulov.notes.ui.screens.NewNoteActivity
+import uz.javokhirjambulov.notes.ui.screens.NoteViewModel
 import uz.javokhirjambulov.notes.ui.screens.ShowNoteActivity
 
 
@@ -49,9 +53,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     NoteAdapter.ItemListener {
 
 
-    private lateinit var myDeletedNotesRef: DatabaseReference
-    private lateinit var myRef: DatabaseReference
-    private lateinit var database: FirebaseDatabase
+//    private lateinit var myDeletedNotesRef: DatabaseReference
+//    private lateinit var myRef: DatabaseReference
+//    private lateinit var database: FirebaseDatabase
     private lateinit var auth: FirebaseAuth
     private lateinit var drawerLayout: DrawerLayout
     private var recyclerView: RecyclerView? = null
@@ -62,6 +66,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var txtUserName: TextView
     private lateinit var txtEmail: TextView
     private lateinit var preferencesPrivate: SharedPreferences
+    private lateinit var noteViewModel:NoteViewModel
+    private lateinit var deletedNoteViewModel:DeletedNotesViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,6 +85,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             startActivity(i)
             consumeFirstRun()
         }
+        noteViewModel = ViewModelProvider(this)[NoteViewModel::class.java]
+        deletedNoteViewModel = ViewModelProvider(this)[DeletedNotesViewModel::class.java]
 
 
 
@@ -113,10 +121,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
         navView.setNavigationItemSelectedListener(this)
 
-        // Write a message to the database
-        database = Firebase.database
-        myRef = database.getReference("Notes")
-        myDeletedNotesRef = database.getReference("DeletedNotes")
+//        // Write a message to the database
+//        database = Firebase.database
+//        myRef = database.getReference("Notes")
+//        myDeletedNotesRef = database.getReference("DeletedNotes")
 
         recyclerView = findViewById<View>(R.id.recyclerView) as RecyclerView
         recyclerView?.adapter = adapter
@@ -126,7 +134,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val oldestFirst = findViewById<RadioButton>(R.id.mOldFirst)
         val titleFirst = findViewById<RadioButton>(R.id.mTitle)*/
 
-        myRef.child(auth.currentUser?.uid.toString()).addValueEventListener(object :
+       /* myRef.child(auth.currentUser?.uid.toString()).addValueEventListener(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val noteList1: MutableList<Note> = mutableListOf()
@@ -152,7 +160,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 // Failed to read value
                 Log.w(TAG, "Failed to read value.", error.toException())
             }
-        })
+        })*/
+        noteViewModel.getAllNotes(applicationContext).observe(this, Observer { lisOfNotes ->
+            lisOfNotes?.let {
+                adapter.setNote(it)
+            } })
 
 
         val swipeGesture = object : SwipeGesture(this) {
@@ -231,14 +243,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun deleteFromDatabase(deletedNote: Note) {
-        myRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId).removeValue()
-
+//        myRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId).removeValue()
+        noteViewModel.deleteById(deletedNote.noteId,applicationContext)
     }
 
     private fun createDeletedNotesDatabase(deletedNote: Note) {
 
-        myDeletedNotesRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId)
-            .setValue(deletedNote)
+//        myDeletedNotesRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId)
+//            .setValue(deletedNote)
+        deletedNoteViewModel.insert(deletedNote,applicationContext)
     }
 
 
@@ -361,10 +374,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (id) {
             R.id.deleted_notes -> {
                 //supportFragmentManager.beginTransaction().replace(R.id.fragmentHolder, DeletedNotes(deletedNotesList)).commit()
-                startActivity(Intent(this, DeletedNotesActivity()::class.java))
+                startActivity(Intent(this, DeletedNotesActivity::class.java))
             }
             R.id.settings->{
-                startActivity(Intent(this, DeletedNotesActivity()::class.java))
+                startActivity(Intent(this, Settings::class.java))
             }
 
             /* R.id.nav_photos -> {

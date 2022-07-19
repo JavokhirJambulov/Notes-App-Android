@@ -7,51 +7,52 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
-import com.google.firebase.ktx.Firebase
+import androidx.lifecycle.ViewModelProvider
 import uz.javokhirjambulov.notes.MainActivity
 import uz.javokhirjambulov.notes.R
 import uz.javokhirjambulov.notes.database.Note
 import uz.javokhirjambulov.notes.databinding.ActivityShowNoteBinding
+import uz.javokhirjambulov.notes.ui.DeletedNotesViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ShowNoteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityShowNoteBinding
-    private lateinit var myRef: DatabaseReference
-    private lateinit var auth: FirebaseAuth
+//    private lateinit var myRef: DatabaseReference
+//    private lateinit var auth: FirebaseAuth
 
     private var note: Note? = null
-    //private lateinit var binding: ActivityShowNoteBinding
-
+    private lateinit var noteViewModel:NoteViewModel
+    private lateinit var deletedNoteViewModel: DeletedNotesViewModel
    // private var note: Note? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i("Tag","oncreate of show")
+        noteViewModel = ViewModelProvider(this)[NoteViewModel::class.java]
+        deletedNoteViewModel = ViewModelProvider(this)[DeletedNotesViewModel::class.java]
         val b = intent.extras
         var value = "" // or other values
+        var deletedDatabase =false
 
-        if (b != null)
+        if (b != null) {
             value = b.getString("key").toString()
+            deletedDatabase = b.getBoolean("deletedNotesDatabase")
+        }
 
-        auth = Firebase.auth
+        /*auth = Firebase.auth
         val database = Firebase.database
-        myRef = database.getReference("Notes")
-        sendNoteSelected(value)
+        myRef = database.getReference("Notes")*/
 
-      binding = DataBindingUtil.setContentView(
+        sendNoteSelected(value,deletedDatabase)
+
+        binding = DataBindingUtil.setContentView(
             this,
             R.layout.activity_show_note
         )
         binding.lifecycleOwner = this
+        if(deletedDatabase)
+            binding.btnEdit.visibility=View.GONE
 
 
 
@@ -83,29 +84,38 @@ class ShowNoteActivity : AppCompatActivity() {
 
 
     // Receive a note from the MainActivity class
-   fun sendNoteSelected(value: String) {
+   fun sendNoteSelected(value: String, deletedDatabase: Boolean) {
 
-        myRef.child(auth.currentUser?.uid.toString()).child(value.toString()).addValueEventListener(object :
-            ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val note = Note(value)
-                note?.description = dataSnapshot.child("description").getValue<String>()
-                note?.title = dataSnapshot.child("title").getValue<String>()
-                note?.idea = dataSnapshot.child("idea").getValue<Boolean>()
-                note?.important = dataSnapshot.child("important").getValue<Boolean>()
-                note?.todo = dataSnapshot.child("todo").getValue<Boolean>()
-
-                Log.i("Tag", note?.description.toString())
-                setNote(note)
-
+//        myRef.child(auth.currentUser?.uid.toString()).child(value.toString()).addValueEventListener(object :
+//            ValueEventListener {
+//            override fun onDataChange(dataSnapshot: DataSnapshot) {
+//                val note = Note(value)
+//                note?.description = dataSnapshot.child("description").getValue<String>()
+//                note?.title = dataSnapshot.child("title").getValue<String>()
+//                note?.idea = dataSnapshot.child("idea").getValue<Boolean>()
+//                note?.important = dataSnapshot.child("important").getValue<Boolean>()
+//                note?.todo = dataSnapshot.child("todo").getValue<Boolean>()
+//
+//                Log.i("Tag", note?.description.toString())
+//                setNote(note)
+//
+//            }
+//
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                // Failed to read value
+//                Log.w("TAG", "Failed to read value.", error.toException())
+//            }
+//        })
+        when(true){
+            deletedDatabase->{
+                setNote(deletedNoteViewModel.getNoteWithID(value,applicationContext))
             }
-
-
-            override fun onCancelled(error: DatabaseError) {
-                // Failed to read value
-                Log.w("TAG", "Failed to read value.", error.toException())
+            else->{
+                noteViewModel.getNoteWithID(value,applicationContext)?.let { setNote(it) }
             }
-        })
+        }
+
 
 
     }
