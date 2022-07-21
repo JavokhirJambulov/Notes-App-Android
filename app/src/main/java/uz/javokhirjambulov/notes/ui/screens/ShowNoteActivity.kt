@@ -8,6 +8,10 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import uz.javokhirjambulov.notes.MainActivity
 import uz.javokhirjambulov.notes.R
 import uz.javokhirjambulov.notes.database.Note
@@ -43,9 +47,6 @@ class ShowNoteActivity : AppCompatActivity() {
         /*auth = Firebase.auth
         val database = Firebase.database
         myRef = database.getReference("Notes")*/
-
-        sendNoteSelected(value,deletedDatabase)
-
         binding = DataBindingUtil.setContentView(
             this,
             R.layout.activity_show_note
@@ -53,6 +54,10 @@ class ShowNoteActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         if(deletedDatabase)
             binding.btnEdit.visibility=View.GONE
+
+        sendNoteSelected(value,deletedDatabase)
+
+
 
 
 
@@ -107,14 +112,23 @@ class ShowNoteActivity : AppCompatActivity() {
 //                Log.w("TAG", "Failed to read value.", error.toException())
 //            }
 //        })
-        when(true){
-            deletedDatabase->{
+        //Log.i("Tag","deleted note${deletedNoteViewModel.getNoteWithID(value,applicationContext)}")
+
+        //Log.i("Tag","note ${noteViewModel.getNoteWithID(value,applicationContext)}")
+            if(deletedDatabase){
+                lifecycleScope.launch(Dispatchers.IO){
+                Log.i("Tag","deleted note${deletedNoteViewModel.getNoteWithID(value,applicationContext)}")
                 setNote(deletedNoteViewModel.getNoteWithID(value,applicationContext))
+                }
+
             }
-            else->{
+            else{
+                lifecycleScope.launch(Dispatchers.IO){
+                Log.i("Tag","note${noteViewModel.getNoteWithID(value,applicationContext)?.title}")
                 noteViewModel.getNoteWithID(value,applicationContext)?.let { setNote(it) }
+                }
             }
-        }
+
 
 
 
@@ -122,7 +136,7 @@ class ShowNoteActivity : AppCompatActivity() {
     private fun setNote(note11: Note) {
         this.note = note11
 
-        this.note?.noteId.let { it1 ->
+        Log.i("Tag","note in set note ${note?.title}")
 
             binding.txtTitle.text = note?.title
             binding.txtTitle.movementMethod = ScrollingMovementMethod()
@@ -151,11 +165,11 @@ class ShowNoteActivity : AppCompatActivity() {
                 note?.let { it1 -> editNote(it1) }
             }
 
-        }
+
 
 
     }
-    fun editNote(note: Note) {
+    private fun editNote(note: Note) {
         val intent =  Intent(this, EditNoteActivity::class.java)
         val b = Bundle()
         b.putString("key", note.noteId) //Your id

@@ -1,5 +1,6 @@
 package uz.javokhirjambulov.notes
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,9 +51,9 @@ class NoteAdapter(
         val diffResult=DiffUtil.calculateDiff(diffCallback)
         noteList.clear()
         noteList.addAll(note)
-        comparator?.let { noteList.sortWith(it) }
+       // comparator?.let { noteList.sortWith(it) }
         diffResult.dispatchUpdatesTo(this)
-        //RecyclerView.SCROLL_INDICATOR_TOP
+
 
     }
 
@@ -60,7 +61,8 @@ class NoteAdapter(
 
 
         noteList.removeAt(adapterPosition)
-        notifyItemRangeChanged(adapterPosition, itemCount)
+        //notifyItemRangeChanged(adapterPosition, itemCount)
+        //notifyDataSetChanged()
 
     }
 
@@ -69,58 +71,19 @@ class NoteAdapter(
         notifyItemRangeChanged(adapterPosition, itemCount)
 
     }
-    fun sort(comparator: Comparator<Note>) {
-        this.comparator=comparator
-        val noteListSorted= ArrayList(noteList)
-        noteListSorted.sortWith(comparator)
-        val diffCallback=UsersDiffCallback(noteList,noteListSorted)
-        val diffResult=DiffUtil.calculateDiff(diffCallback)
-        //noteList.clear()
-        noteList=noteListSorted
+//    fun sort(comparator: Comparator<Note>) {
+//        this.comparator=comparator
+//        val noteListSorted= ArrayList(noteList)
+//        noteListSorted.sortWith(comparator)
+//        val diffCallback=UsersDiffCallback(noteList,noteListSorted)
+//        val diffResult=DiffUtil.calculateDiff(diffCallback)
+//        //noteList.clear()
+//        noteList=noteListSorted
+//
+//        diffResult.dispatchUpdatesTo(this)
+//
+//    }
 
-        diffResult.dispatchUpdatesTo(this)
-
-    }
-    /* fun addNote(note: Note){
-         noteList.add(note)
-         notifyDataSetChanged()
-     }*/
-
-
-/*    fun updateList(sortAlphabetical: Boolean,newestFirst:Boolean,oldestFirst: Boolean) {
-
-        when {
-            sortAlphabetical -> {
-                sortAlphabetical();
-            }
-            newestFirst -> {
-                sortNewestDate();
-            }
-            oldestFirst -> {
-                sortOldestDate()
-            }
-        }
-
-    }*/
-
-    /*fun sortOldestDate() {
-        Log.i("","oldest first is true")
-        noteList.sortBy {  it.noteId.toLong() }
-        notifyDataSetChanged()
-    }
-
-    fun sortAlphabetical() {
-        Log.i("","title is true")
-        noteList.sortBy{it.title?.toLowerCase(Locale.ROOT) }
-        notifyDataSetChanged()
-    }
-
-    private fun sortNewestDate() {
-        Log.i("","Newest first is true")
-        noteList.sortBy {  it.noteId.toLong() }
-        noteList.reverse()
-        notifyDataSetChanged()
-    }*/
 
 
     override fun onCreateViewHolder(

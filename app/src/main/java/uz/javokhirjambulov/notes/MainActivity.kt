@@ -4,6 +4,7 @@ package uz.javokhirjambulov.notes
 
 //import android.annotation.SuppressLint
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -12,6 +13,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -22,8 +24,10 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -35,6 +39,8 @@ import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import uz.javokhirjambulov.notes.commons.Constants
 import uz.javokhirjambulov.notes.database.Note
 import uz.javokhirjambulov.notes.login.LoginActivity
@@ -53,7 +59,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     NoteAdapter.ItemListener {
 
 
-//    private lateinit var myDeletedNotesRef: DatabaseReference
+   /* private lateinit var newFirst:MenuItem
+    private lateinit var oldFirst:MenuItem
+    private lateinit var titleFirst:MenuItem*/
+
+    //    private lateinit var myDeletedNotesRef: DatabaseReference
 //    private lateinit var myRef: DatabaseReference
 //    private lateinit var database: FirebaseDatabase
     private lateinit var auth: FirebaseAuth
@@ -128,6 +138,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         recyclerView = findViewById<View>(R.id.recyclerView) as RecyclerView
         recyclerView?.adapter = adapter
+        lifecycleScope.launch(Dispatchers.IO){
+            recyclerView!!.smoothSnapToPosition(0)
+        }
+
 
 
         /*val newestFirst = findViewById<RadioButton>(R.id.mNewFirst)
@@ -147,7 +161,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     note.title = postSnapshot.child("title").getValue<String>()
                     note.idea = postSnapshot.child("idea").getValue<Boolean>()
                     note.important = postSnapshot.child("important").getValue<Boolean>()
-                    note.todo = postSnapshot.child("todo").getValue<Boolean>()
+                    note.to do = postSnapshot.child("to do").getValue<Boolean>()
 
                     noteList1.add(note)
                 }
@@ -161,14 +175,91 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Log.w(TAG, "Failed to read value.", error.toException())
             }
         })*/
-        noteViewModel.getAllNotes(applicationContext).observe(this, Observer { lisOfNotes ->
-            lisOfNotes?.let {
-                adapter.setNote(it)
-            } })
+//        val menu: Menu? = null
+//        menuInflater.inflate(R.menu.main, menu)
+//        if (menu != null) {
+//            newFirst = menu.findItem(R.id.mNewFirst)
+//        }
+//        if (menu != null) {
+//            oldFirst = menu.findItem(R.id.mOldFirst)
+//        }
+//        if (menu != null) {
+//            titleFirst = menu.findItem(R.id.mTitle)
+        //}
+        when {
+            isNewFirst() -> {
+                noteViewModel.new()
+                //newFirst.isChecked = true
+            }
+            isOldFirst()->{
+                noteViewModel.old()
+                //oldFirst.isChecked = true
+
+            }
+            isTitleFirst()->{
+                noteViewModel.title()
+                //titleFirst.isChecked = true
+            }
+        }
+        noteViewModel.mNew.observe(this){it->
+            if(it == true){
+
+                preferencesPrivate.edit().putBoolean(Constants.new, true).apply()
+                notOldFirst()
+                notTitleFirst()
+
+                noteViewModel.getAllNotesByIdNew(applicationContext).observe(this) { lisOfNotes ->
+                    lisOfNotes?.let {
+                        adapter.setNote(it)
+                    }
+                }
+
+
+            }
+        }
+        noteViewModel.mOld.observe(this){it->
+            if(it == true){
+
+                recyclerView!!.smoothSnapToPosition(0)
+                preferencesPrivate.edit().putBoolean(Constants.old, true).apply()
+                notNewFirst()
+                notTitleFirst()
+
+                noteViewModel.getAllNotesByIdOld(applicationContext).observe(this) { lisOfNotes ->
+                    lisOfNotes?.let {
+                        adapter.setNote(it)
+                    }
+                }
+
+            }
+        }
+        noteViewModel.mTitle.observe(this){it->
+            if(it == true){
+                recyclerView!!.smoothSnapToPosition(0)
+                preferencesPrivate.edit().putBoolean(Constants.title, true).apply()
+                notOldFirst()
+                notNewFirst()
+
+                noteViewModel.getAllNotesByTitle(applicationContext).observe(this) { lisOfNotes ->
+                    lisOfNotes?.let {
+                        adapter.setNote(it)
+                    }
+                }
+
+
+            }
+        }
+
+
+
+
+
+
 
 
         val swipeGesture = object : SwipeGesture(this) {
 
+            @SuppressLint("NotifyDataSetChanged")
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 when (direction) {
                     ItemTouchHelper.RIGHT -> {
@@ -179,7 +270,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     ItemTouchHelper.LEFT -> {
                         val position = viewHolder.adapterPosition
                         val deletedItem = adapter.getItem(position)
-                        adapter.deleteNote(position)
+                        //adapter.deleteNote(position)
+                        deleteFromDatabase(deletedItem)
+                        //createDeletedNotesDatabase(adapter.getItem(position))
+                        //recyclerView!!.recycledViewPool.clear()
+                        //adapter.notifyDataSetChanged()
 
                         Snackbar.make(
                             recyclerView!!,
@@ -190,8 +285,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                                 // adding on click listener to our action of snack bar.
                                 // below line is to add our item to array list with a position.
 
-                                deletedItem.let { it1 -> adapter.addNote(position, it1) }
-
+                                //deletedItem.let { it1 -> adapter.addNote(position, it1) }
+                                insertToDatabase(deletedItem)
 
                             }.addCallback(object : Snackbar.Callback() {
                                 override fun onDismissed(
@@ -201,7 +296,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                                     super.onDismissed(transientBottomBar, event)
                                     if (event != DISMISS_EVENT_ACTION) {
                                         // Snackbar closed on its own
-                                        deleteFromDatabase(deletedItem)
+                                        //deleteFromDatabase(adapter.getItem(position))
                                         createDeletedNotesDatabase(deletedItem)
 
                                     }
@@ -241,6 +336,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // titleFirst?.let { newestFirst?.let { it1 -> oldestFirst?.let { it2 -> adapter?.updateList(it, it1, it2) } } }
 
     }
+    private fun insertToDatabase(deletedNote: Note) {
+//        myRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId).removeValue()
+        noteViewModel.insert(deletedNote,applicationContext)
+    }
 
     private fun deleteFromDatabase(deletedNote: Note) {
 //        myRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId).removeValue()
@@ -260,7 +359,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val intent = Intent(this, ShowNoteActivity::class.java)
         val b = Bundle()
         b.putString("key", adapter.getItem(noteToShow).noteId) //Your id
-
+        adapter.getItem(noteToShow).title?.let { Log.i("Tag", it) }
         intent.putExtras(b) //Put your id to your next Intent
 
         startActivity(intent)
@@ -279,20 +378,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     /* fun addNote(note:Note){
          adapter?.addNote(note)
      }*/
-    private fun sortOldestDate() {
-        adapter.sort { l, r -> l.noteId.compareTo(r.noteId) }
-       // recyclerView?.scrollToPosition(0)
-    }
-
-    private fun sortAlphabetical() {
-        adapter.sort { l, r -> l.title?.compareTo(r.title ?: "") ?: 0 }
-       // recyclerView?.scrollToPosition(0)
-    }
-
-    private fun sortNewestDate() {
-        adapter.sort { l, r -> r.noteId.compareTo(l.noteId) }
-      //  recyclerView?.scrollToPosition(0)
-    }
+//    private fun sortOldestDate() {
+//        adapter.sort { l, r -> l.noteId.compareTo(r.noteId) }
+//       // recyclerView?.scrollToPosition(0)
+//    }
+//
+//    private fun sortAlphabetical() {
+//        adapter.sort { l, r -> l.title?.compareTo(r.title ?: "") ?: 0 }
+//       // recyclerView?.scrollToPosition(0)
+//    }
+//
+//    private fun sortNewestDate() {
+//        adapter.sort { l, r -> r.noteId.compareTo(l.noteId) }
+//      //  recyclerView?.scrollToPosition(0)
+//    }
 
 
     override fun onBackPressed() {
@@ -309,25 +408,74 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+       super.onPrepareOptionsMenu(menu)
+        when {
+            isNewFirst() -> {
+                if (menu != null) {
+                    menu.findItem(R.id.mNewFirst).isChecked = true
+                }
+
+            }
+            isOldFirst()->{
+                if (menu != null) {
+                    menu.findItem(R.id.mOldFirst).isChecked = true
+                }
+
+            }
+            isTitleFirst()->{
+                if (menu != null) {
+                    menu.findItem(R.id.mTitle).isChecked = true
+                }
+            }
+        }
+        return true
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
         return when (item.itemId) {
 
             R.id.mNewFirst -> {
                 item.isChecked = !item.isChecked
-                sortNewestDate()
+                lifecycleScope.launch(Dispatchers.IO){
+                    recyclerView!!.smoothSnapToPosition(0)
+                }
+                noteViewModel.new()
+                preferencesPrivate.edit().putBoolean(Constants.new, true).apply()
+                notOldFirst()
+                notTitleFirst()
+
+                //sortNewestDate()
                 return true
             }
             R.id.mOldFirst -> {
                 item.isChecked = !item.isChecked
-                sortOldestDate()
+                lifecycleScope.launch(Dispatchers.IO){
+                    recyclerView!!.smoothSnapToPosition(0)
+                }
+                noteViewModel.old()
+                preferencesPrivate.edit().putBoolean(Constants.old, true).apply()
+                notNewFirst()
+                notTitleFirst()
+                //sortOldestDate()
+
                 return true
             }
             R.id.mTitle -> {
                 item.isChecked = !item.isChecked
-                sortAlphabetical()
+                lifecycleScope.launch(Dispatchers.IO){
+                    recyclerView!!.smoothSnapToPosition(0)
+                }
+                noteViewModel.title()
+                preferencesPrivate.edit().putBoolean(Constants.title, true).apply()
+                notOldFirst()
+                notNewFirst()
+                //sortAlphabetical()
+
                 return true
             }
 
@@ -414,6 +562,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
+    fun RecyclerView.smoothSnapToPosition(position: Int, snapMode: Int = LinearSmoothScroller.SNAP_TO_START) {
+        val smoothScroller = object : LinearSmoothScroller(this.context) {
+            override fun getVerticalSnapPreference(): Int = snapMode
+            override fun getHorizontalSnapPreference(): Int = snapMode
+        }
+        smoothScroller.targetPosition = position
+        layoutManager?.startSmoothScroll(smoothScroller)
+    }
 
     override fun onClick(view: View, itemPosition: Int) {
         showNote(itemPosition)
@@ -423,5 +579,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun consumeFirstRun() =
         preferencesPrivate.edit().putBoolean(Constants.FIRST_RUN, false).apply()
 
+    private fun isTitleFirst() = preferencesPrivate.getBoolean(Constants.title,false)
+    private fun isOldFirst() = preferencesPrivate.getBoolean(Constants.old,true)
+    private fun isNewFirst() = preferencesPrivate.getBoolean(Constants.new,false)
+
+    private fun notTitleFirst() = preferencesPrivate.edit().putBoolean(Constants.title,false).apply()
+    private fun notOldFirst() = preferencesPrivate.edit().putBoolean(Constants.old,false).apply()
+    private fun notNewFirst() = preferencesPrivate.edit().putBoolean(Constants.new,false).apply()
 
 }

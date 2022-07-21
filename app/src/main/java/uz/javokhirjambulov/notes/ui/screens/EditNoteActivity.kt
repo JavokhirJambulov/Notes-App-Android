@@ -58,14 +58,15 @@ class EditNoteActivity : AppCompatActivity() {
         }
         database = Firebase.database
         myRef = database.getReference("Notes")*/
-        Log.i("Tag", value)
-        sendNoteSelected(value)
+
 
         binding = DataBindingUtil.setContentView(
             this,
             R.layout.activity_new_note
         )
         binding.lifecycleOwner = this
+        Log.i("Tag", value)
+        sendNoteSelected(value)
 
 
 //        editNote?.noteId.let { it1 ->
@@ -146,7 +147,10 @@ class EditNoteActivity : AppCompatActivity() {
 //                    Log.w("TAG", "Failed to read value.", error.toException())
 //                }
 //                })
-        noteViewModel.getNoteWithID(value,applicationContext)?.let { setNote(it) }
+        lifecycleScope.launch(Dispatchers.IO){
+            Log.i("Tag","note${noteViewModel.getNoteWithID(value,applicationContext)}")
+            noteViewModel.getNoteWithID(value,applicationContext)?.let { setNote(it) }
+        }
 
     }
 

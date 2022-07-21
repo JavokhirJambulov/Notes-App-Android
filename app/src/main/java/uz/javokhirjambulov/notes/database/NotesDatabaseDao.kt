@@ -28,15 +28,21 @@ interface NotesDatabaseDao {
      */
     @Query("DELETE FROM notes_table")
     suspend fun clear()
-    @Query("delete from notes_table where noteId = :id")
-    fun deleteById(id: String)
+    @Query("DELETE from notes_table where noteId = :id")
+    suspend fun deleteById(id: String)
     /**
      * Selects and returns all rows in the table,
      *
      * sorted by noteId in descending order.
      */
-    @Query("SELECT * FROM notes_table ORDER BY noteId DESC")
+    @Query("SELECT * FROM notes_table ORDER BY noteId ASC")
     fun getAllNotes(): LiveData<List<Note>>
+    @Query("SELECT * FROM notes_table ORDER BY noteId ASC")
+    fun getAllNotesByIdOld(): LiveData<List<Note>>
+    @Query("SELECT * FROM notes_table ORDER BY note_title ASC")
+    fun getAllNotesByTitle(): LiveData<List<Note>>
+    @Query("SELECT * FROM notes_table ORDER BY noteId DESC")
+    fun getAllNotesByIdNew(): LiveData<List<Note>>
     /**
      * Selects and returns the note with given noteId.
      */
