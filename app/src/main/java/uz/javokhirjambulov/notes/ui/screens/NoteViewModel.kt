@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import uz.javokhirjambulov.notes.database.DeletedNoteDatabase
 import uz.javokhirjambulov.notes.database.Note
 import uz.javokhirjambulov.notes.database.NoteDatabase
 
@@ -68,6 +69,10 @@ class NoteViewModel:ViewModel() {
     }
 
     // Method #5
+    fun getAllNotes(context: Context): LiveData<List<Note>> {
+        return NoteDatabase.getDataBase(context).noteDao().getAllNotes()
+
+    }
     fun getAllNotesByIdOld(context: Context): LiveData<List<Note>> {
             return NoteDatabase.getDataBase(context).noteDao().getAllNotesByIdOld()
 

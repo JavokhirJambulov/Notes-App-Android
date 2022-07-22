@@ -145,14 +145,23 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/impExpCloud"
+            android:id="@+id/expCloud"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:text="@string/import_export_from_cloud"
+            android:text="@string/export_from_cloud"
             android:textColor="@color/black"
             android:textSize="18sp"
            app:layout_constraintTop_toBottomOf="@id/txtCloud"/>
+        <TextView
+            android:id="@+id/impCloud"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/import_to_cloud"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@id/expCloud"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

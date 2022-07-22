@@ -61,7 +61,7 @@ class NoteAdapter(
 
 
         noteList.removeAt(adapterPosition)
-        //notifyItemRangeChanged(adapterPosition, itemCount)
+        notifyItemRangeChanged(adapterPosition, itemCount)
         //notifyDataSetChanged()
 
     }

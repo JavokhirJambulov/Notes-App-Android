@@ -64,5 +64,6 @@
     <string name="view_source_code_at_github">View source code on GitHub</string>
     <string name="send_feedback">Send feedback</string>
     <string name="app_intro">App intro</string>
-    <string name="import_export_from_cloud">Import/Export from Cloud</string>
+    <string name="export_from_cloud">Export to the Cloud</string>
+    <string name="import_to_cloud">Import from the Cloud</string>
 </resources>

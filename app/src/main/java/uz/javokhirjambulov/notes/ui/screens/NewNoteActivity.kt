@@ -1,7 +1,9 @@
 package uz.javokhirjambulov.notes.ui.screens
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -85,5 +87,10 @@ class NewNoteActivity : AppCompatActivity() {
     private fun startMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         this.startActivity(intent)
+        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+    }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
     }
 }

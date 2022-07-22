@@ -1,10 +1,7 @@
 package uz.javokhirjambulov.notes.ui
 
-import android.app.ActionBar
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -12,16 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
-import com.google.firebase.ktx.Firebase
-import uz.javokhirjambulov.notes.MainActivity
 import uz.javokhirjambulov.notes.NoteAdapter
 import uz.javokhirjambulov.notes.R
 import uz.javokhirjambulov.notes.SwipeGesture
@@ -41,10 +28,6 @@ class DeletedNotesActivity : AppCompatActivity(), NoteAdapter.ItemListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.deleted_notes)
-//        val actionBar: ActionBar? = actionBar
-////        actionBar?.setDisplayHomeAsUpEnabled(true)
-//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-//        supportActionBar?.title = getString(R.string.deletedNotes)
         deletedNoteViewModel = ViewModelProvider(this)[DeletedNotesViewModel::class.java]
 
 //        auth = Firebase.auth
@@ -98,14 +81,14 @@ class DeletedNotesActivity : AppCompatActivity(), NoteAdapter.ItemListener {
                     ItemTouchHelper.LEFT -> {
                         val position = viewHolder.adapterPosition
                         val deletedItem = adapter.getItem(position)
-
-                        adapter.deleteNote(position)
+                        //adapter.deleteNote(position)
+                        deleteFromDeletedNotesDatabase(deletedItem)
                         Snackbar.make(recyclerViewDeletedNotes!!, "${deletedItem.title.toString()} is deleted", Snackbar.LENGTH_LONG)
                                 .setAction("Undo") {
                                     // adding on click listener to our action of snack bar.
                                     // below line is to add our item to array list with a position.
 
-                                    deletedItem.let { it1 -> adapter.addNote(position, it1) }
+                                   insertToDatabase(deletedItem)
 
 
                                 }.addCallback(object : Snackbar.Callback() {
@@ -113,7 +96,7 @@ class DeletedNotesActivity : AppCompatActivity(), NoteAdapter.ItemListener {
                                         super.onDismissed(transientBottomBar, event)
                                         if (event != DISMISS_EVENT_ACTION) {
                                             // Snackbar closed on its own
-                                            deleteFromDeletedNotesDatabase(deletedItem)
+                                            Snackbar.make(recyclerViewDeletedNotes, "${deletedItem.title.toString()} is deleted permanently!", Snackbar.LENGTH_LONG).show()
 
                                         }
                                     }
@@ -149,6 +132,10 @@ class DeletedNotesActivity : AppCompatActivity(), NoteAdapter.ItemListener {
         return true
 
     }*/
+    private fun insertToDatabase(deletedNote: Note) {
+//        myRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId).removeValue()
+      deletedNoteViewModel.insert(deletedNote,applicationContext)
+    }
 
     private fun deleteFromDeletedNotesDatabase(deletedNote: Note) {
 
@@ -165,9 +152,15 @@ class DeletedNotesActivity : AppCompatActivity(), NoteAdapter.ItemListener {
         intent.putExtras(b) //Put your id to your next Intent
 
         startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
 
     override fun onClick(view: View, itemPosition: Int) {
         showNote(itemPosition)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
     }
 }

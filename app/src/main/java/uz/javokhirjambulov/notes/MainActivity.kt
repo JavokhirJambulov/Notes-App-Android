@@ -5,6 +5,7 @@ package uz.javokhirjambulov.notes
 //import android.annotation.SuppressLint
 
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -107,6 +108,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         fab.setOnClickListener {
             val intent =  Intent(this, NewNoteActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 //            //hide the keyboard
 //            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 //            imm.hideSoftInputFromWindow(fab.windowToken,0)
@@ -138,9 +140,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         recyclerView = findViewById<View>(R.id.recyclerView) as RecyclerView
         recyclerView?.adapter = adapter
-        lifecycleScope.launch(Dispatchers.IO){
-            recyclerView!!.smoothSnapToPosition(0)
-        }
+//        lifecycleScope.launch(Dispatchers.IO){
+//            recyclerView!!.smoothSnapToPosition(0)
+//        }
 
 
 
@@ -201,6 +203,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 //titleFirst.isChecked = true
             }
         }
+
         noteViewModel.mNew.observe(this){it->
             if(it == true){
 
@@ -213,14 +216,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         adapter.setNote(it)
                     }
                 }
-
-
+                recyclerView!!.smoothSnapToPosition(0)
             }
         }
         noteViewModel.mOld.observe(this){it->
             if(it == true){
 
-                recyclerView!!.smoothSnapToPosition(0)
                 preferencesPrivate.edit().putBoolean(Constants.old, true).apply()
                 notNewFirst()
                 notTitleFirst()
@@ -230,12 +231,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         adapter.setNote(it)
                     }
                 }
+                recyclerView!!.smoothSnapToPosition(0)
 
             }
         }
         noteViewModel.mTitle.observe(this){it->
             if(it == true){
-                recyclerView!!.smoothSnapToPosition(0)
+
                 preferencesPrivate.edit().putBoolean(Constants.title, true).apply()
                 notOldFirst()
                 notNewFirst()
@@ -245,10 +247,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         adapter.setNote(it)
                     }
                 }
-
-
+                recyclerView!!.smoothSnapToPosition(0)
             }
         }
+        adapter.registerAdapterDataObserver( object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+                super.onItemRangeMoved(fromPosition, toPosition, itemCount)
+                //lifecycleScope.launch(Dispatchers.IO){
+                 recyclerView!!.smoothSnapToPosition(0)
+                //}
+            }
+
+            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+                super.onItemRangeRemoved(positionStart, itemCount)
+                //lifecycleScope.launch(Dispatchers.IO){
+                 recyclerView!!.smoothSnapToPosition(itemCount)
+                //}
+            }
+
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                recyclerView!!.smoothSnapToPosition(0)
+            }
+        })
 
 
 
@@ -296,7 +317,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                                     super.onDismissed(transientBottomBar, event)
                                     if (event != DISMISS_EVENT_ACTION) {
                                         // Snackbar closed on its own
-                                        //deleteFromDatabase(adapter.getItem(position))
+                                        //deleteFromDatabase(deletedItem)
                                         createDeletedNotesDatabase(deletedItem)
 
                                     }
@@ -336,6 +357,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // titleFirst?.let { newestFirst?.let { it1 -> oldestFirst?.let { it2 -> adapter?.updateList(it, it1, it2) } } }
 
     }
+
     private fun insertToDatabase(deletedNote: Note) {
 //        myRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId).removeValue()
         noteViewModel.insert(deletedNote,applicationContext)
@@ -363,6 +385,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         intent.putExtras(b) //Put your id to your next Intent
 
         startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
 
 
@@ -441,39 +464,41 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             R.id.mNewFirst -> {
                 item.isChecked = !item.isChecked
-                lifecycleScope.launch(Dispatchers.IO){
-                    recyclerView!!.smoothSnapToPosition(0)
-                }
+
                 noteViewModel.new()
                 preferencesPrivate.edit().putBoolean(Constants.new, true).apply()
                 notOldFirst()
                 notTitleFirst()
-
+                //lifecycleScope.launch(Dispatchers.IO){
+                   // recyclerView!!.smoothSnapToPosition(0)
+                //}
                 //sortNewestDate()
                 return true
             }
             R.id.mOldFirst -> {
                 item.isChecked = !item.isChecked
-                lifecycleScope.launch(Dispatchers.IO){
-                    recyclerView!!.smoothSnapToPosition(0)
-                }
+
                 noteViewModel.old()
                 preferencesPrivate.edit().putBoolean(Constants.old, true).apply()
                 notNewFirst()
                 notTitleFirst()
+                //lifecycleScope.launch(Dispatchers.IO){
+                    //recyclerView!!.smoothSnapToPosition(0)
+                //}
                 //sortOldestDate()
 
                 return true
             }
             R.id.mTitle -> {
                 item.isChecked = !item.isChecked
-                lifecycleScope.launch(Dispatchers.IO){
-                    recyclerView!!.smoothSnapToPosition(0)
-                }
+
                 noteViewModel.title()
                 preferencesPrivate.edit().putBoolean(Constants.title, true).apply()
                 notOldFirst()
                 notNewFirst()
+                //lifecycleScope.launch(Dispatchers.IO){
+                   // recyclerView!!.smoothSnapToPosition(0)
+                //}
                 //sortAlphabetical()
 
                 return true

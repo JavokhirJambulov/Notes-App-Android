@@ -18,6 +18,8 @@
     <style name="Theme.Notes.ActionBar" parent="Theme.Notes">
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
+        <item name="android:windowAnimationStyle">@anim/left_to_right</item>
+        <item name="android:windowExitAnimation">@anim/right_to_left</item>
     </style>
 <style name="Theme.Notes.NavigationDrawer">
     <item name="android:background">?attr/colorPrimaryVariant</item>

@@ -16,6 +16,7 @@ import uz.javokhirjambulov.notes.MainActivity
 import uz.javokhirjambulov.notes.R
 import uz.javokhirjambulov.notes.database.Note
 import uz.javokhirjambulov.notes.databinding.ActivityShowNoteBinding
+import uz.javokhirjambulov.notes.ui.DeletedNotesActivity
 import uz.javokhirjambulov.notes.ui.DeletedNotesViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -64,7 +65,10 @@ class ShowNoteActivity : AppCompatActivity() {
 
 
         binding.btnCancel.setOnClickListener {
-            startMainActivity()
+            if(deletedDatabase){
+                startDeletedNotesActivity()
+            }else
+               startMainActivity()
         }
         binding.btnShare.setOnClickListener{
             val shareIntent = Intent.createChooser(Intent().apply {
@@ -82,9 +86,17 @@ class ShowNoteActivity : AppCompatActivity() {
 
 
     }
+
+    private fun startDeletedNotesActivity() {
+        val intent = Intent(this, DeletedNotesActivity::class.java)
+        this.startActivity(intent)
+        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+    }
+
     private fun startMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         this.startActivity(intent)
+        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
     }
 
 
@@ -176,5 +188,10 @@ class ShowNoteActivity : AppCompatActivity() {
 
         intent.putExtras(b) //Put your id to your next Intent
         startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
     }
 }

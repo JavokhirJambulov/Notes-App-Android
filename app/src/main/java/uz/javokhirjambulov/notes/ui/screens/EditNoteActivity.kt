@@ -121,6 +121,7 @@ class EditNoteActivity : AppCompatActivity() {
         intent.putExtras(b) //Put your id to your next Intent
 
         startActivity(intent)
+        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
     }
     // Receive a note from the MainActivity class
     private fun sendNoteSelected(value: String) {
@@ -174,6 +175,10 @@ class EditNoteActivity : AppCompatActivity() {
             }
         }
 
+    }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
     }
 
 }
