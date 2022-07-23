@@ -3,7 +3,9 @@ package uz.javokhirjambulov.notes.ui.screens
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -65,21 +67,33 @@ class NewNoteActivity : AppCompatActivity() {
 
             // Set its properties to match the
             // user's entries on the form
-            newNote.title = binding.editTitle.text.toString()
+            when {
+                TextUtils.isEmpty(binding.editTitle.text.toString()) -> {
+                    binding.editTitle.error = "Please, enter Title!"
+                }
+                TextUtils.isEmpty(binding.editDescription.text.toString()) -> {
+                    binding.editDescription.error="Please, enter Description!"
+                }
+                !binding.checkBoxIdea.isChecked && !binding.checkBoxTodo.isChecked && !binding.checkBoxImportant.isChecked->{
+                    Toast.makeText(applicationContext,"Please select at least one type of the Note!",Toast.LENGTH_SHORT).show()
+                }
+                else-> {
+                newNote.title = binding.editTitle.text.toString()
 
-            newNote.description = binding.editDescription.text.toString()
+                newNote.description = binding.editDescription.text.toString()
 
-            newNote.idea = binding.checkBoxIdea.isChecked
-            newNote.todo = binding.checkBoxTodo.isChecked
-            newNote.important = binding.checkBoxImportant.isChecked
+                newNote.idea = binding.checkBoxIdea.isChecked
+                newNote.todo = binding.checkBoxTodo.isChecked
+                newNote.important = binding.checkBoxImportant.isChecked
 
 
 //            myRef.child(uid).child(newNote.noteId).setValue(newNote)
-            noteViewModel.insert(newNote,applicationContext)
-            //val callingActivity=activity as MainActivity?
-            //callingActivity?.addNote(newNote)
-            startMainActivity()
-
+                noteViewModel.insert(newNote, applicationContext)
+                //val callingActivity=activity as MainActivity?
+                //callingActivity?.addNote(newNote)
+                startMainActivity()
+            }
+            }
         }
 
     }

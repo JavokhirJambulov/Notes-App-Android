@@ -3,6 +3,7 @@ package uz.javokhirjambulov.notes.ui
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -96,7 +97,7 @@ class DeletedNotesActivity : AppCompatActivity(), NoteAdapter.ItemListener {
                                         super.onDismissed(transientBottomBar, event)
                                         if (event != DISMISS_EVENT_ACTION) {
                                             // Snackbar closed on its own
-                                            Snackbar.make(recyclerViewDeletedNotes, "${deletedItem.title.toString()} is deleted permanently!", Snackbar.LENGTH_LONG).show()
+                                            Toast.makeText(applicationContext, "${deletedItem.title.toString()} is deleted permanently!", Toast.LENGTH_SHORT).show()
 
                                         }
                                     }

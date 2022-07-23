@@ -3,6 +3,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/search"
+        app:showAsAction="ifRoom|collapseActionView"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="@string/search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"/>
+    <item
         android:id="@+id/mLogOut"
         android:orderInCategory="0"
         android:title="@string/log_out"
@@ -30,4 +36,5 @@
             </group>
         </menu>
     </item>
+
 </menu>

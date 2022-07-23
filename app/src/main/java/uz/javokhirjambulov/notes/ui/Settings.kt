@@ -58,16 +58,43 @@ class Settings : AppCompatActivity() {
             noteViewModel.getAllNotes(applicationContext).observe(this){ lisOfNotes ->
                 lisOfNotes?.let {
                     for(i in it) {
-                        myRef.child(auth.currentUser?.uid.toString()).child(i.noteId)
-                            .setValue(i)
+                        if(i.todo == null ||i.todo == false ){
+                            val note = Note(i.noteId)
+                            note.title = i.title
+                            note.description = i.description
+                            note.idea = i.idea
+                            note.important = i.important
+                            note.todo = false
+                            noteViewModel.update(note,applicationContext)
+                            myRef.child(auth.currentUser?.uid.toString()).child(i.noteId)
+                                .setValue(note)
+                        }
+                        else{
+                            myRef.child(auth.currentUser?.uid.toString()).child(i.noteId)
+                                .setValue(i)
+                         }
                     }
                 }
             }
             deletedNoteViewModel.getAllNotes(applicationContext).observe(this){ lisOfNotes ->
                 lisOfNotes?.let {
                     for(i in it) {
-                        myDeletedNotesRef.child(auth.currentUser?.uid.toString()).child(i.noteId)
-                            .setValue(i)
+                        if(i.todo == null ||i.todo == false ){
+                            val note = Note(i.noteId)
+                            note.title = i.title
+                            note.description = i.description
+                            note.idea = i.idea
+                            note.important = i.important
+                            note.todo = false
+                            deletedNoteViewModel.update(note,applicationContext)
+                            myDeletedNotesRef.child(auth.currentUser?.uid.toString()).child(i.noteId)
+                                .setValue(note)
+                        }
+                        else{
+                            myDeletedNotesRef.child(auth.currentUser?.uid.toString()).child(i.noteId)
+                                .setValue(i)
+                        }
+
                     }
                 }
             }

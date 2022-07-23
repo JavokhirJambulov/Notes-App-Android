@@ -77,14 +77,18 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
         btnLogin.setOnClickListener{
-            if(TextUtils.isEmpty(email.text.toString())&& TextUtils.isEmpty(password.text.toString())) {
-                email.error = "Please, enter your info"
-                password.error="Please, enter your info"
-                return@setOnClickListener
-            }else{
-                val email = email.text.toString()
-                val password=password.text.toString()
-                login(email, password)
+            when {
+                TextUtils.isEmpty(email.text.toString()) -> {
+                    email.error = "Please, enter your email!"
+                }
+                TextUtils.isEmpty(password.text.toString()) -> {
+                    password.error="Please, enter your password!"
+                }
+                else -> {
+                    val email = email.text.toString()
+                    val password=password.text.toString()
+                    login(email, password)
+                }
             }
         }
 

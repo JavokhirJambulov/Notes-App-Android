@@ -66,4 +66,5 @@
     <string name="app_intro">App intro</string>
     <string name="export_from_cloud">Export to the Cloud</string>
     <string name="import_to_cloud">Import from the Cloud</string>
+    <string name="search">Search</string>
 </resources>

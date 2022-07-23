@@ -57,12 +57,13 @@
                 android:id="@+id/editTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10sp"
+                android:layout_marginTop="15dp"
                 android:ems="10"
                 android:gravity="bottom"
                 android:hint="@string/title_hint"
                 android:inputType="textPersonName|textMultiLine|textCapSentences"
                 android:maxLines="2"
+                android:background="@null"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:scrollbars="vertical"
@@ -80,7 +81,7 @@
                 android:gravity="bottom"
                 android:hint="@string/description_hint"
                 android:inputType="textShortMessage|textMultiLine|textCapSentences"
-                android:maxLines="10"
+                android:background="@null"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:scrollbars="vertical"
@@ -105,11 +106,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                android:layout_marginBottom="15dp"
                 android:text="@string/idea_text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.149"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editDescription" />
+                app:layout_constraintTop_toBottomOf="@+id/editDescription"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <CheckBox
                 android:id="@+id/checkBoxTodo"

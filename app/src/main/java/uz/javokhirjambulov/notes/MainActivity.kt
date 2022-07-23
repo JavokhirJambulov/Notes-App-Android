@@ -5,7 +5,6 @@ package uz.javokhirjambulov.notes
 //import android.annotation.SuppressLint
 
 import android.annotation.SuppressLint
-import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -14,18 +13,18 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import androidx.core.view.MenuItemCompat
+import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -37,11 +36,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
-import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import uz.javokhirjambulov.notes.commons.Constants
 import uz.javokhirjambulov.notes.database.Note
 import uz.javokhirjambulov.notes.login.LoginActivity
@@ -51,6 +46,7 @@ import uz.javokhirjambulov.notes.ui.Settings
 import uz.javokhirjambulov.notes.ui.screens.NewNoteActivity
 import uz.javokhirjambulov.notes.ui.screens.NoteViewModel
 import uz.javokhirjambulov.notes.ui.screens.ShowNoteActivity
+import java.util.*
 
 
 private const val TAG = ""
@@ -73,6 +69,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val adapter: NoteAdapter by lazy {
         NoteAdapter(this)
     }
+    private lateinit var fab:FloatingActionButton
     private lateinit var imageUser: ImageView
     private lateinit var txtUserName: TextView
     private lateinit var txtEmail: TextView
@@ -104,7 +101,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         auth = Firebase.auth
 
 
-        val fab: FloatingActionButton = findViewById(R.id.fab)
+        fab = findViewById(R.id.fab)
         fab.setOnClickListener {
             val intent =  Intent(this, NewNoteActivity::class.java)
             startActivity(intent)
@@ -258,17 +255,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 //}
             }
 
-            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
-                super.onItemRangeRemoved(positionStart, itemCount)
-                //lifecycleScope.launch(Dispatchers.IO){
-                 recyclerView!!.smoothSnapToPosition(itemCount)
-                //}
-            }
-
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                super.onItemRangeInserted(positionStart, itemCount)
-                recyclerView!!.smoothSnapToPosition(0)
-            }
+//            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+//                super.onItemRangeInserted(positionStart, itemCount)
+//                recyclerView!!.smoothSnapToPosition(0)
+//            }
         })
 
 
@@ -428,6 +418,47 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
+        val menuItem = menu.findItem(R.id.search)
+        val searchView = menuItem.actionView as SearchView
+        searchView.queryHint = "Type here to search for notes!"
+        searchView.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onQueryTextChange(newText: String?): Boolean {
+                val tempArr = ArrayList<Note>()
+                noteViewModel.getAllNotes(applicationContext).observe(this@MainActivity){ listOfNotes ->
+                    for (arr in listOfNotes) {
+                        if (arr.title!!.toLowerCase(Locale.getDefault()).contains(newText.toString())||arr.description!!.toLowerCase(Locale.getDefault()).contains(newText.toString())) {
+                            tempArr.add(arr)
+                            adapter.setNote(tempArr)
+                            adapter.notifyDataSetChanged()
+                        }
+                    }
+                }
+//                adapter.setNote(tempArr)
+//                adapter.notifyDataSetChanged()
+                return true
+            }
+
+        })
+
+        MenuItemCompat.setOnActionExpandListener(
+            menuItem,
+            object : MenuItemCompat.OnActionExpandListener {
+                override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                    fab.isVisible = false
+                    return true
+                }
+
+                override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                    fab.isVisible = true
+                    return true
+                }
+            })
+
         return true
     }
 

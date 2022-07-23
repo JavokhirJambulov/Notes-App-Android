@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ShowNoteActivity : AppCompatActivity() {
+    private var deletedDatabase: Boolean = false
     private lateinit var binding: ActivityShowNoteBinding
 //    private lateinit var myRef: DatabaseReference
 //    private lateinit var auth: FirebaseAuth
@@ -38,7 +39,6 @@ class ShowNoteActivity : AppCompatActivity() {
         deletedNoteViewModel = ViewModelProvider(this)[DeletedNotesViewModel::class.java]
         val b = intent.extras
         var value = "" // or other values
-        var deletedDatabase =false
 
         if (b != null) {
             value = b.getString("key").toString()
@@ -192,6 +192,10 @@ class ShowNoteActivity : AppCompatActivity() {
     }
     override fun onBackPressed() {
         super.onBackPressed()
+        if(deletedDatabase){
+            startDeletedNotesActivity()
+        }else
+            startMainActivity()
         overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
     }
 }
