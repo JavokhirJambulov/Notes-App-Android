@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import uz.javokhirjambulov.notes.MainActivity
 import uz.javokhirjambulov.notes.R
 import uz.javokhirjambulov.notes.database.Note
+import uz.javokhirjambulov.notes.database.NoteDatabase
 import uz.javokhirjambulov.notes.databinding.ActivityNewNoteBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -44,7 +45,7 @@ class EditNoteActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i("Tag", "Oncreate of editnote")
-        noteViewModel = ViewModelProvider(this)[NoteViewModel::class.java]
+        noteViewModel = ViewModelProvider(this,  NoteViewModelFactory(NoteDatabase.getDataBase()))[NoteViewModel::class.java]
         val b = intent.extras
         value = "" // or other values
 
@@ -101,7 +102,7 @@ class EditNoteActivity : AppCompatActivity() {
             newNote?.important = binding.checkBoxImportant.isChecked
 
             newNote?.let { it1 ->
-                noteViewModel.update(it1,applicationContext)
+                noteViewModel.update(it1)
                 // Quit the dialog
                 startShowActivity(it1.noteId)
             }
@@ -149,8 +150,8 @@ class EditNoteActivity : AppCompatActivity() {
 //                }
 //                })
         lifecycleScope.launch(Dispatchers.IO){
-            Log.i("Tag","note${noteViewModel.getNoteWithID(value,applicationContext)}")
-            noteViewModel.getNoteWithID(value,applicationContext)?.let { setNote(it) }
+            Log.i("Tag","note${noteViewModel.getNoteWithID(value)}")
+            noteViewModel.getNoteWithID(value)?.let { setNote(it) }
         }
 
     }

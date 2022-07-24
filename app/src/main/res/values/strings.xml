@@ -67,4 +67,12 @@
     <string name="export_from_cloud">Export to the Cloud</string>
     <string name="import_to_cloud">Import from the Cloud</string>
     <string name="search">Search</string>
+    <string name="importedFromCloudToast">All notes are successfully imported from the cloud</string>
+    <string name="uploadedToCloudToast">All notes are successfully uploaded to the cloud</string>
+    <string name="simple_to_use">Simple to use design</string>
+    <string name="easy_to_navigate">Easy to navigate and organize.</string>
+    <string name="intro_get_started">Get started</string>
+    <string name="keep_everything_ontrack">Keep every item of your todo list on track.</string>
+    <string name="organize_your_ideas">Organize your ideas</string>
+    <string name="write_down_your_thoughts">Write down your ideas to keep everything on track.</string>
 </resources>

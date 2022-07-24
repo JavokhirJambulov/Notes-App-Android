@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import uz.javokhirjambulov.notes.MainActivity
 import uz.javokhirjambulov.notes.R
 import uz.javokhirjambulov.notes.database.Note
+import uz.javokhirjambulov.notes.database.NoteDatabase
 import uz.javokhirjambulov.notes.databinding.ActivityShowNoteBinding
 import uz.javokhirjambulov.notes.ui.DeletedNotesActivity
 import uz.javokhirjambulov.notes.ui.DeletedNotesViewModel
@@ -35,7 +36,7 @@ class ShowNoteActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i("Tag","oncreate of show")
-        noteViewModel = ViewModelProvider(this)[NoteViewModel::class.java]
+        noteViewModel = ViewModelProvider(this,  NoteViewModelFactory(NoteDatabase.getDataBase()))[NoteViewModel::class.java]
         deletedNoteViewModel = ViewModelProvider(this)[DeletedNotesViewModel::class.java]
         val b = intent.extras
         var value = "" // or other values
@@ -136,8 +137,8 @@ class ShowNoteActivity : AppCompatActivity() {
             }
             else{
                 lifecycleScope.launch(Dispatchers.IO){
-                Log.i("Tag","note${noteViewModel.getNoteWithID(value,applicationContext)?.title}")
-                noteViewModel.getNoteWithID(value,applicationContext)?.let { setNote(it) }
+                Log.i("Tag","note${noteViewModel.getNoteWithID(value)?.title}")
+                noteViewModel.getNoteWithID(value)?.let { setNote(it) }
                 }
             }
 

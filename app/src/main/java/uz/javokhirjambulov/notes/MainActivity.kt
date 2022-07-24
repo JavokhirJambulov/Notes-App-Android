@@ -39,12 +39,15 @@ import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 import uz.javokhirjambulov.notes.commons.Constants
 import uz.javokhirjambulov.notes.database.Note
+import uz.javokhirjambulov.notes.database.NoteDatabase
 import uz.javokhirjambulov.notes.login.LoginActivity
 import uz.javokhirjambulov.notes.ui.DeletedNotesActivity
 import uz.javokhirjambulov.notes.ui.DeletedNotesViewModel
+import uz.javokhirjambulov.notes.ui.MainIntroActivity
 import uz.javokhirjambulov.notes.ui.Settings
 import uz.javokhirjambulov.notes.ui.screens.NewNoteActivity
 import uz.javokhirjambulov.notes.ui.screens.NoteViewModel
+import uz.javokhirjambulov.notes.ui.screens.NoteViewModelFactory
 import uz.javokhirjambulov.notes.ui.screens.ShowNoteActivity
 import java.util.*
 
@@ -93,7 +96,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             startActivity(i)
             consumeFirstRun()
         }
-        noteViewModel = ViewModelProvider(this)[NoteViewModel::class.java]
+        noteViewModel = ViewModelProvider(this,  NoteViewModelFactory(NoteDatabase.getDataBase()))[NoteViewModel::class.java]
         deletedNoteViewModel = ViewModelProvider(this)[DeletedNotesViewModel::class.java]
 
 
@@ -208,7 +211,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 notOldFirst()
                 notTitleFirst()
 
-                noteViewModel.getAllNotesByIdNew(applicationContext).observe(this) { lisOfNotes ->
+                noteViewModel.getAllNotesByIdNew().observe(this) { lisOfNotes ->
                     lisOfNotes?.let {
                         adapter.setNote(it)
                     }
@@ -223,7 +226,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 notNewFirst()
                 notTitleFirst()
 
-                noteViewModel.getAllNotesByIdOld(applicationContext).observe(this) { lisOfNotes ->
+                noteViewModel.getAllNotesByIdOld().observe(this) { lisOfNotes ->
                     lisOfNotes?.let {
                         adapter.setNote(it)
                     }
@@ -239,7 +242,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 notOldFirst()
                 notNewFirst()
 
-                noteViewModel.getAllNotesByTitle(applicationContext).observe(this) { lisOfNotes ->
+                noteViewModel.getAllNotesByTitle().observe(this) { lisOfNotes ->
                     lisOfNotes?.let {
                         adapter.setNote(it)
                     }
@@ -350,12 +353,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun insertToDatabase(deletedNote: Note) {
 //        myRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId).removeValue()
-        noteViewModel.insert(deletedNote,applicationContext)
+        noteViewModel.insert(deletedNote)
     }
 
     private fun deleteFromDatabase(deletedNote: Note) {
 //        myRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId).removeValue()
-        noteViewModel.deleteById(deletedNote.noteId,applicationContext)
+        noteViewModel.deleteById(deletedNote.noteId)
     }
 
     private fun createDeletedNotesDatabase(deletedNote: Note) {
@@ -429,7 +432,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             @SuppressLint("NotifyDataSetChanged")
             override fun onQueryTextChange(newText: String?): Boolean {
                 val tempArr = ArrayList<Note>()
-                noteViewModel.getAllNotes(applicationContext).observe(this@MainActivity){ listOfNotes ->
+                noteViewModel.getAllNotes().observe(this@MainActivity){ listOfNotes ->
                     for (arr in listOfNotes) {
                         if (arr.title!!.toLowerCase(Locale.getDefault()).contains(newText.toString())||arr.description!!.toLowerCase(Locale.getDefault()).contains(newText.toString())) {
                             tempArr.add(arr)

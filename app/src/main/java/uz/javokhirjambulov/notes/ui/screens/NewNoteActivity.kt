@@ -1,6 +1,7 @@
 package uz.javokhirjambulov.notes.ui.screens
 
 import android.app.ActivityOptions
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -17,7 +18,9 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import uz.javokhirjambulov.notes.MainActivity
 import uz.javokhirjambulov.notes.R
+import uz.javokhirjambulov.notes.commons.Dialog
 import uz.javokhirjambulov.notes.database.Note
+import uz.javokhirjambulov.notes.database.NoteDatabase
 import uz.javokhirjambulov.notes.databinding.ActivityNewNoteBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -25,18 +28,21 @@ import java.util.*
 
 class NewNoteActivity : AppCompatActivity() {
 
-//    private lateinit var uid: String
+    //    private lateinit var uid: String
 //    private lateinit var user: FirebaseUser
 //    private lateinit var myRef: DatabaseReference
 //    private lateinit var database: FirebaseDatabase
-    private lateinit var binding:ActivityNewNoteBinding
-    private lateinit var noteViewModel:NoteViewModel
-
+    private lateinit var binding: ActivityNewNoteBinding
+    private lateinit var noteViewModel: NoteViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        noteViewModel = ViewModelProvider(this)[NoteViewModel::class.java]
+        noteViewModel = ViewModelProvider(
+            this,
+            NoteViewModelFactory(NoteDatabase.getDataBase())
+        )[NoteViewModel::class.java]
+
         binding = DataBindingUtil.setContentView(
             this,
             R.layout.activity_new_note
@@ -50,11 +56,11 @@ class NewNoteActivity : AppCompatActivity() {
 //        }
         /*database = Firebase.database
         myRef = database.getReference("Notes")*/
-        val currentTime =System.currentTimeMillis()
-        val outputDataFormat= SimpleDateFormat("dd-MM-yyyy", Locale.US)
+        val currentTime = System.currentTimeMillis()
+        val outputDataFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
         val calendar: Calendar = Calendar.getInstance()
         calendar.timeInMillis = currentTime
-        binding.tvDateTime.text =outputDataFormat.format(calendar.time)
+        binding.tvDateTime.text = outputDataFormat.format(calendar.time)
         // Handle the cancel button
         binding.btnCancel.setOnClickListener {
             startMainActivity()
@@ -72,39 +78,63 @@ class NewNoteActivity : AppCompatActivity() {
                     binding.editTitle.error = "Please, enter Title!"
                 }
                 TextUtils.isEmpty(binding.editDescription.text.toString()) -> {
-                    binding.editDescription.error="Please, enter Description!"
+                    binding.editDescription.error = "Please, enter Description!"
                 }
-                !binding.checkBoxIdea.isChecked && !binding.checkBoxTodo.isChecked && !binding.checkBoxImportant.isChecked->{
-                    Toast.makeText(applicationContext,"Please select at least one type of the Note!",Toast.LENGTH_SHORT).show()
+                !binding.checkBoxIdea.isChecked && !binding.checkBoxTodo.isChecked && !binding.checkBoxImportant.isChecked -> {
+                    Toast.makeText(
+                        applicationContext,
+                        "Please select at least one type of the Note!",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-                else-> {
-                newNote.title = binding.editTitle.text.toString()
+                else -> {
+                    newNote.title = binding.editTitle.text.toString()
 
-                newNote.description = binding.editDescription.text.toString()
+                    newNote.description = binding.editDescription.text.toString()
 
-                newNote.idea = binding.checkBoxIdea.isChecked
-                newNote.todo = binding.checkBoxTodo.isChecked
-                newNote.important = binding.checkBoxImportant.isChecked
+                    newNote.idea = binding.checkBoxIdea.isChecked
+                    newNote.todo = binding.checkBoxTodo.isChecked
+                    newNote.important = binding.checkBoxImportant.isChecked
 
 
 //            myRef.child(uid).child(newNote.noteId).setValue(newNote)
-                noteViewModel.insert(newNote, applicationContext)
-                //val callingActivity=activity as MainActivity?
-                //callingActivity?.addNote(newNote)
-                startMainActivity()
+                    noteViewModel.insert(newNote, onDoneFunction = {
+                        startMainActivity()
+                    })
+                    //val callingActivity=activity as MainActivity?
+                    //callingActivity?.addNote(newNote)
+
+                }
             }
+        }
+        initObjects()
+
+    }
+
+    var progressDialog: AlertDialog? = null
+    private fun initObjects() {
+        noteViewModel.progress.observe(this) {
+            if (it == true) {
+                progressDialog = Dialog.progress().cancelable(false).show(this)
+            } else {
+                progressDialog?.dismiss()
             }
         }
 
+        noteViewModel.errorMessage.observe(this) {
+            if (it?.isNotEmpty() == true)
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun startMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         this.startActivity(intent)
-        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left)
     }
+
     override fun onBackPressed() {
         super.onBackPressed()
-        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left)
     }
 }
