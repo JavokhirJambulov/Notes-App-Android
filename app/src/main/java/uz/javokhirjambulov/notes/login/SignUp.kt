@@ -24,7 +24,7 @@ class SignUp : AppCompatActivity() {
     private lateinit var btnSignUp: Button
     private lateinit var auth: FirebaseAuth
     companion object{
-        private const val TAG = "LoginActivity"
+        private const val TAG = "SignInActivity"
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

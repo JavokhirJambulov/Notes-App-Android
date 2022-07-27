@@ -52,13 +52,10 @@ class NoteViewModel(private val noteDatabase: NoteDatabase) : ViewModel() {
     fun insert(note: Note, onDoneFunction: (() -> Unit)? = null) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                setProgress(true)
                 noteDatabase.noteDao().save(note)
                 onDoneFunction?.invoke()
             } catch (e: Exception) {
-                _errorMessage.postValue(e.toString())
-            } finally {
-                setProgress(false)
+                setErrorMessage(e.toString())
             }
         }
     }
@@ -79,7 +76,7 @@ class NoteViewModel(private val noteDatabase: NoteDatabase) : ViewModel() {
                 noteDatabase.noteDao().deleteById(id)
 
             } catch (e: Exception) {
-                _errorMessage.postValue(e.toString())
+                setErrorMessage(e.toString())
             } finally {
                 setProgress(false)
             }
@@ -87,21 +84,23 @@ class NoteViewModel(private val noteDatabase: NoteDatabase) : ViewModel() {
 
     }
 
-    private fun setProgress(b: Boolean) {
+    fun setProgress(b: Boolean) {
         _progress.postValue(b)
     }
+    fun setErrorMessage(e: String) {
+        _errorMessage.postValue(e)
+    }
+
 
     // Method #4
     fun update(note: Note) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 setProgress(true)
-
-
                 noteDatabase.noteDao().update(note)
 
             } catch (e: Exception) {
-                _errorMessage.postValue(e.toString())
+                setErrorMessage(e.toString())
             } finally {
                 setProgress(false)
             }

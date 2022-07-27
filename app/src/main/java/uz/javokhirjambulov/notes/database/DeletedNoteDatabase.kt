@@ -12,12 +12,15 @@ abstract class DeletedNoteDatabase: RoomDatabase(){
         private var notesDataBase: DeletedNoteDatabase? = null
 
         @Synchronized
-        fun getDataBase(context: Context): DeletedNoteDatabase {
+        fun getDataBase(context: Context? = null): DeletedNoteDatabase {
 
-            if (notesDataBase == null) {
+            if (notesDataBase == null && context != null) {
                 notesDataBase = Room.databaseBuilder(context, DeletedNoteDatabase::class.java, "deleted_notes.db").build()
             }
             return notesDataBase!!
+        }
+        fun initDatabase(context: Context? = null) {
+            getDataBase(context = context)
         }
     }
 

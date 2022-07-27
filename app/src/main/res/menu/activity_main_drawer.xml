@@ -12,6 +12,10 @@
             android:id="@+id/settings"
             android:icon="@drawable/ic_settings"
             android:title="@string/settings" />
+        <item
+            android:id="@+id/signIn"
+            android:icon="@drawable/ic_baseline_login"
+            android:title="@string/login" />
 
     </group>
 

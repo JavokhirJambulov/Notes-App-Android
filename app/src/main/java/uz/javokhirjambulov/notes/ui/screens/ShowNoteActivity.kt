@@ -14,11 +14,13 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import uz.javokhirjambulov.notes.MainActivity
 import uz.javokhirjambulov.notes.R
+import uz.javokhirjambulov.notes.database.DeletedNoteDatabase
 import uz.javokhirjambulov.notes.database.Note
 import uz.javokhirjambulov.notes.database.NoteDatabase
 import uz.javokhirjambulov.notes.databinding.ActivityShowNoteBinding
 import uz.javokhirjambulov.notes.ui.DeletedNotesActivity
 import uz.javokhirjambulov.notes.ui.DeletedNotesViewModel
+import uz.javokhirjambulov.notes.ui.DeletedNotesViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -37,7 +39,9 @@ class ShowNoteActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Log.i("Tag","oncreate of show")
         noteViewModel = ViewModelProvider(this,  NoteViewModelFactory(NoteDatabase.getDataBase()))[NoteViewModel::class.java]
-        deletedNoteViewModel = ViewModelProvider(this)[DeletedNotesViewModel::class.java]
+        deletedNoteViewModel = ViewModelProvider(this, DeletedNotesViewModelFactory(
+            DeletedNoteDatabase.getDataBase())
+        )[DeletedNotesViewModel::class.java]
         val b = intent.extras
         var value = "" // or other values
 
@@ -130,8 +134,8 @@ class ShowNoteActivity : AppCompatActivity() {
         //Log.i("Tag","note ${noteViewModel.getNoteWithID(value,applicationContext)}")
             if(deletedDatabase){
                 lifecycleScope.launch(Dispatchers.IO){
-                Log.i("Tag","deleted note${deletedNoteViewModel.getNoteWithID(value,applicationContext)}")
-                setNote(deletedNoteViewModel.getNoteWithID(value,applicationContext))
+                Log.i("Tag","deleted note${deletedNoteViewModel.getNoteWithID(value)}")
+                setNote(deletedNoteViewModel.getNoteWithID(value))
                 }
 
             }

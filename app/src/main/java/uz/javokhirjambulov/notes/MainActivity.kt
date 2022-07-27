@@ -38,13 +38,11 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 import uz.javokhirjambulov.notes.commons.Constants
+import uz.javokhirjambulov.notes.database.DeletedNoteDatabase
 import uz.javokhirjambulov.notes.database.Note
 import uz.javokhirjambulov.notes.database.NoteDatabase
 import uz.javokhirjambulov.notes.login.LoginActivity
-import uz.javokhirjambulov.notes.ui.DeletedNotesActivity
-import uz.javokhirjambulov.notes.ui.DeletedNotesViewModel
-import uz.javokhirjambulov.notes.ui.MainIntroActivity
-import uz.javokhirjambulov.notes.ui.Settings
+import uz.javokhirjambulov.notes.ui.*
 import uz.javokhirjambulov.notes.ui.screens.NewNoteActivity
 import uz.javokhirjambulov.notes.ui.screens.NoteViewModel
 import uz.javokhirjambulov.notes.ui.screens.NoteViewModelFactory
@@ -57,15 +55,6 @@ private const val TAG = ""
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     NoteAdapter.ItemListener {
-
-
-   /* private lateinit var newFirst:MenuItem
-    private lateinit var oldFirst:MenuItem
-    private lateinit var titleFirst:MenuItem*/
-
-    //    private lateinit var myDeletedNotesRef: DatabaseReference
-//    private lateinit var myRef: DatabaseReference
-//    private lateinit var database: FirebaseDatabase
     private lateinit var auth: FirebaseAuth
     private lateinit var drawerLayout: DrawerLayout
     private var recyclerView: RecyclerView? = null
@@ -81,6 +70,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var deletedNoteViewModel:DeletedNotesViewModel
 
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -90,14 +81,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             this.packageName + "_private_preferences",
             Context.MODE_PRIVATE
         )
-        if (isFirstRun()) {
+        if (isUserLoggedIn()) {
             // show app intro
             val i = Intent(this, LoginActivity::class.java)
             startActivity(i)
-            consumeFirstRun()
+            yesUserIn()
         }
         noteViewModel = ViewModelProvider(this,  NoteViewModelFactory(NoteDatabase.getDataBase()))[NoteViewModel::class.java]
-        deletedNoteViewModel = ViewModelProvider(this)[DeletedNotesViewModel::class.java]
+        deletedNoteViewModel = ViewModelProvider(this,DeletedNotesViewModelFactory(DeletedNoteDatabase.getDataBase()))[DeletedNotesViewModel::class.java]
 
 
 
@@ -133,61 +124,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
         navView.setNavigationItemSelectedListener(this)
 
-//        // Write a message to the database
-//        database = Firebase.database
-//        myRef = database.getReference("Notes")
-//        myDeletedNotesRef = database.getReference("DeletedNotes")
-
         recyclerView = findViewById<View>(R.id.recyclerView) as RecyclerView
         recyclerView?.adapter = adapter
-//        lifecycleScope.launch(Dispatchers.IO){
-//            recyclerView!!.smoothSnapToPosition(0)
-//        }
-
-
-
-        /*val newestFirst = findViewById<RadioButton>(R.id.mNewFirst)
-        val oldestFirst = findViewById<RadioButton>(R.id.mOldFirst)
-        val titleFirst = findViewById<RadioButton>(R.id.mTitle)*/
-
-       /* myRef.child(auth.currentUser?.uid.toString()).addValueEventListener(object :
-            ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val noteList1: MutableList<Note> = mutableListOf()
-
-                for (postSnapshot in dataSnapshot.children) {
-                    //getNote = Note()
-                    val noteId = postSnapshot.key.toString()
-                    val note = Note(noteId)
-                    note.description = postSnapshot.child("description").getValue<String>()
-                    note.title = postSnapshot.child("title").getValue<String>()
-                    note.idea = postSnapshot.child("idea").getValue<Boolean>()
-                    note.important = postSnapshot.child("important").getValue<Boolean>()
-                    note.to do = postSnapshot.child("to do").getValue<Boolean>()
-
-                    noteList1.add(note)
-                }
-
-                adapter.setNote(noteList1)
-            }
-
-
-            override fun onCancelled(error: DatabaseError) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException())
-            }
-        })*/
-//        val menu: Menu? = null
-//        menuInflater.inflate(R.menu.main, menu)
-//        if (menu != null) {
-//            newFirst = menu.findItem(R.id.mNewFirst)
-//        }
-//        if (menu != null) {
-//            oldFirst = menu.findItem(R.id.mOldFirst)
-//        }
-//        if (menu != null) {
-//            titleFirst = menu.findItem(R.id.mTitle)
-        //}
+        val user = Firebase.auth.currentUser
+        user?.let {
+            // Name, email address, and profile photo Url
+            txtUserName.text = user.displayName
+            txtEmail.text = user.email
+            Glide.with(this).load(user.photoUrl).into(imageUser)
+        }
         when {
             isNewFirst() -> {
                 noteViewModel.new()
@@ -257,18 +202,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                  recyclerView!!.smoothSnapToPosition(0)
                 //}
             }
-
-//            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-//                super.onItemRangeInserted(positionStart, itemCount)
-//                recyclerView!!.smoothSnapToPosition(0)
-//            }
         })
-
-
-
-
-
-
 
 
         val swipeGesture = object : SwipeGesture(this) {
@@ -326,7 +260,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
                 }
 
-
             }
 
         }
@@ -338,16 +271,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
         displayScreen(-1)
-        val user = Firebase.auth.currentUser
-        user?.let {
-            // Name, email address, and profile photo Url
-            txtUserName.text = user.displayName
-            txtEmail.text = user.email
-            Glide.with(this).load(user.photoUrl).into(imageUser)
-        }
 
-
-        // titleFirst?.let { newestFirst?.let { it1 -> oldestFirst?.let { it2 -> adapter?.updateList(it, it1, it2) } } }
 
     }
 
@@ -365,7 +289,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 //        myDeletedNotesRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId)
 //            .setValue(deletedNote)
-        deletedNoteViewModel.insert(deletedNote,applicationContext)
+        deletedNoteViewModel.insert(deletedNote)
     }
 
 
@@ -382,34 +306,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
 
-//    fun editNote(note: Int) {
-//        val intent =  Intent(this, EditNoteActivity::class.java)
-//        val b = Bundle()
-//        b.putString("key", adapter.getItem(note).noteId) //Your id
-//
-//        intent.putExtras(b) //Put your id to your next Intent
-//        startActivity(intent)
-//    }
-
-    /* fun addNote(note:Note){
-         adapter?.addNote(note)
-     }*/
-//    private fun sortOldestDate() {
-//        adapter.sort { l, r -> l.noteId.compareTo(r.noteId) }
-//       // recyclerView?.scrollToPosition(0)
-//    }
-//
-//    private fun sortAlphabetical() {
-//        adapter.sort { l, r -> l.title?.compareTo(r.title ?: "") ?: 0 }
-//       // recyclerView?.scrollToPosition(0)
-//    }
-//
-//    private fun sortNewestDate() {
-//        adapter.sort { l, r -> r.noteId.compareTo(l.noteId) }
-//      //  recyclerView?.scrollToPosition(0)
-//    }
-
-
     override fun onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START)
@@ -417,6 +313,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             super.onBackPressed()
         }
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -432,7 +329,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             @SuppressLint("NotifyDataSetChanged")
             override fun onQueryTextChange(newText: String?): Boolean {
                 val tempArr = ArrayList<Note>()
-                noteViewModel.getAllNotes().observe(this@MainActivity){ listOfNotes ->
+                noteViewModel.getAllNotesByIdNew().observe(this@MainActivity){ listOfNotes ->
                     for (arr in listOfNotes) {
                         if (arr.title!!.toLowerCase(Locale.getDefault()).contains(newText.toString())||arr.description!!.toLowerCase(Locale.getDefault()).contains(newText.toString())) {
                             tempArr.add(arr)
@@ -441,8 +338,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         }
                     }
                 }
-//                adapter.setNote(tempArr)
-//                adapter.notifyDataSetChanged()
                 return true
             }
 
@@ -516,10 +411,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 preferencesPrivate.edit().putBoolean(Constants.old, true).apply()
                 notNewFirst()
                 notTitleFirst()
-                //lifecycleScope.launch(Dispatchers.IO){
-                    //recyclerView!!.smoothSnapToPosition(0)
-                //}
-                //sortOldestDate()
 
                 return true
             }
@@ -530,49 +421,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 preferencesPrivate.edit().putBoolean(Constants.title, true).apply()
                 notOldFirst()
                 notNewFirst()
-                //lifecycleScope.launch(Dispatchers.IO){
-                   // recyclerView!!.smoothSnapToPosition(0)
-                //}
-                //sortAlphabetical()
-
                 return true
             }
 
             R.id.mLogOut -> {
+                if(auth.currentUser!=null){
                 Toast.makeText(this, "Log Out", Toast.LENGTH_SHORT).show()
                 auth.signOut()
                 val logoutIntent = Intent(this, LoginActivity::class.java)
                 logoutIntent.flags =
                     Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                preferencesPrivate.edit().putBoolean(Constants.FIRST_RUN, true).apply()
+               //preferencesPrivate.edit().putBoolean(Constants.FIRST_RUN, true).apply()
                 startActivity(logoutIntent)
                 finish()
+                }
+                else{
+                    Toast.makeText(this, "First Log In to your Google Account", Toast.LENGTH_SHORT).show()
+                }
                 return true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-/*    private fun titleFirstSort() {
-        Log.i("","title is true")
-        noteList.sortBy{it.title?.toLowerCase(Locale.ROOT) }
-
-
-        adapter?.setNote(noteList)
-    }
-
-    private fun oldFirstSort() {
-        Log.i("","oldest first is true")
-        noteList.sortBy {  it.noteId.toLong() }
-        adapter?.setNote(noteList)
-    }
-
-    private fun newFirstSort() {
-        Log.i("","Newest first is true")
-        noteList.sortBy {  it.noteId.toLong() }
-        noteList.reverse()
-        adapter?.setNote(noteList)
-    }*/
 
     private fun displayScreen(id: Int) {
 
@@ -586,30 +457,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.settings->{
                 startActivity(Intent(this, Settings::class.java))
             }
-
-            /* R.id.nav_photos -> {
-                 supportFragmentManager.beginTransaction().replace(R.id.relativelayout, PhotosFragment()).commit()
-             }
-
-             R.id.nav_movies -> {
-                 supportFragmentManager.beginTransaction().replace(R.id.relativelayout, MoviesFragment()).commit()
-             }
-
-             R.id.nav_notifications -> {
-                 Toast.makeText(this, "Clicked Notifications", Toast.LENGTH_SHORT).show()
-             }
-
-             R.id.nav_settings -> {
-                 Toast.makeText(this, "Clicked Settings", Toast.LENGTH_SHORT).show()
-             }
-
-             R.id.nav_aboutUs -> {
-                 Toast.makeText(this, "Clicked About Us", Toast.LENGTH_SHORT).show()
-             }
-
-             R.id.nav_privacyPolicy -> {
-                 Toast.makeText(this, "Clicked Privacy Policy", Toast.LENGTH_SHORT).show()
-             }*/
+            R.id.signIn->{
+                startActivity(Intent(this, LoginActivity::class.java))
+            }
         }
     }
 
@@ -633,10 +483,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onClick(view: View, itemPosition: Int) {
         showNote(itemPosition)
     }
-    private fun isFirstRun() = preferencesPrivate.getBoolean(Constants.FIRST_RUN, true)
+    private fun isUserLoggedIn() = preferencesPrivate.getBoolean(Constants.USER_LOGGED_IN, true)
 
-    private fun consumeFirstRun() =
-        preferencesPrivate.edit().putBoolean(Constants.FIRST_RUN, false).apply()
+    private fun yesUserIn() =
+        preferencesPrivate.edit().putBoolean(Constants.USER_LOGGED_IN, false).apply()
 
     private fun isTitleFirst() = preferencesPrivate.getBoolean(Constants.title,false)
     private fun isOldFirst() = preferencesPrivate.getBoolean(Constants.old,true)

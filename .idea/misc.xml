@@ -33,6 +33,7 @@
         <entry key="..\:/akam/GithubApps/Notes-App-Android/app/src/main/res/layout/activity_new_note.xml" value="0.3055555555555556" />
         <entry key="..\:/akam/GithubApps/Notes-App-Android/app/src/main/res/layout/activity_settings.xml" value="0.3333333333333333" />
         <entry key="..\:/akam/GithubApps/Notes-App-Android/app/src/main/res/layout/activity_show_note.xml" value="0.22" />
+        <entry key="..\:/akam/GithubApps/Notes-App-Android/app/src/main/res/layout/activity_signup.xml" value="0.3055555555555556" />
         <entry key="..\:/akam/GithubApps/Notes-App-Android/app/src/main/res/layout/app_bar_main.xml" value="0.3055555555555556" />
         <entry key="..\:/akam/GithubApps/Notes-App-Android/app/src/main/res/layout/content_main.xml" value="0.3055555555555556" />
         <entry key="..\:/akam/GithubApps/Notes-App-Android/app/src/main/res/layout/deleted_notes.xml" value="0.3055555555555556" />
@@ -46,7 +47,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_X" default="true" project-jdk-name="18" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

@@ -4,6 +4,7 @@ const val BUNDLE_KEY_NOTE_LIST="BUNDLE_KEY_NOTE_LIST"
 object Constants {
 //used to Open the Intro Activity first
     const val FIRST_RUN = "pref_first_run"
+    const val USER_LOGGED_IN = "pref_user"
     const val FIRST_RUN_OF_LOGIN = "pref_first_run"
     const val title = "pref_title"
     const val old = "pref_old"

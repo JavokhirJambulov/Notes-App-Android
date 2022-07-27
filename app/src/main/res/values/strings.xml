@@ -75,4 +75,5 @@
     <string name="keep_everything_ontrack">Keep every item of your todo list on track.</string>
     <string name="organize_your_ideas">Organize your ideas</string>
     <string name="write_down_your_thoughts">Write down your ideas to keep everything on track.</string>
+    <string name="login">Login</string>
 </resources>

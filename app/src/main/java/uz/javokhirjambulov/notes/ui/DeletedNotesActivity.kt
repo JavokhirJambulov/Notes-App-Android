@@ -13,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import uz.javokhirjambulov.notes.NoteAdapter
 import uz.javokhirjambulov.notes.R
 import uz.javokhirjambulov.notes.SwipeGesture
+import uz.javokhirjambulov.notes.database.DeletedNoteDatabase
 import uz.javokhirjambulov.notes.database.Note
 import uz.javokhirjambulov.notes.ui.screens.ShowNoteActivity
 
@@ -29,7 +30,8 @@ class DeletedNotesActivity : AppCompatActivity(), NoteAdapter.ItemListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.deleted_notes)
-        deletedNoteViewModel = ViewModelProvider(this)[DeletedNotesViewModel::class.java]
+        deletedNoteViewModel = ViewModelProvider(this,DeletedNotesViewModelFactory(
+            DeletedNoteDatabase.getDataBase()))[DeletedNotesViewModel::class.java]
 
 //        auth = Firebase.auth
 //        val database = Firebase.database
@@ -64,10 +66,11 @@ class DeletedNotesActivity : AppCompatActivity(), NoteAdapter.ItemListener {
 //                Log.w("TAG", "Failed to read value.", error.toException())
 //            }
 //        })
-        deletedNoteViewModel.getAllNotes(applicationContext).observe(this, Observer { lisOfNotes ->
+        deletedNoteViewModel.getAllNotes().observe(this) { lisOfNotes ->
             lisOfNotes?.let {
                 adapter.setNote(it)
-            } })
+            }
+        }
 
         val swipeGesture = object : SwipeGesture(this) {
 
@@ -135,13 +138,13 @@ class DeletedNotesActivity : AppCompatActivity(), NoteAdapter.ItemListener {
     }*/
     private fun insertToDatabase(deletedNote: Note) {
 //        myRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId).removeValue()
-      deletedNoteViewModel.insert(deletedNote,applicationContext)
+      deletedNoteViewModel.insert(deletedNote)
     }
 
     private fun deleteFromDeletedNotesDatabase(deletedNote: Note) {
 
 //        myRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId).removeValue()
-        deletedNoteViewModel.deleteById(deletedNote.noteId,applicationContext)
+        deletedNoteViewModel.deleteById(deletedNote.noteId)
     }
 
 

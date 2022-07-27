@@ -1,12 +1,15 @@
 package uz.javokhirjambulov.notes.login
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
 import android.widget.*
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -33,6 +36,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var btnGoogleSignIn: SignInButton
     private lateinit var preferencesPrivate: SharedPreferences
+    private lateinit var skip:TextView
 
 
     companion object{
@@ -51,16 +55,12 @@ class LoginActivity : AppCompatActivity() {
 //        btnLogin=findViewById(R.id.btnLogin)
 //        btnSignUp=findViewById(R.id.btnSignUp)
         btnGoogleSignIn=findViewById(R.id.btnGoogleSingIn)
+        skip = findViewById(R.id.textViewSkip)
         preferencesPrivate = this.getSharedPreferences(
             this.packageName + "_private_preferences",
             Context.MODE_PRIVATE
         )
-        if (isFirstRun()) {
-            // show app intro
-            val i = Intent(this, MainIntroActivity::class.java)
-            startActivity(i)
-            consumeFirstRun()
-        }
+
 
 
 
@@ -75,15 +75,15 @@ class LoginActivity : AppCompatActivity() {
             .build()
 
         val googleSignInClient = GoogleSignIn.getClient(this, gso)
+        skip.setOnClickListener{
+            startActivity((Intent(this, MainActivity::class.java)))
 
+            finish()
+        }
         btnGoogleSignIn.setOnClickListener{
             val signInIntent = googleSignInClient.signInIntent
             startActivityForResult(signInIntent, RC_SIGN_IN)
         }
-
-
-
-
 
 
 //            btnSignUp.setOnClickListener{
@@ -110,10 +110,38 @@ class LoginActivity : AppCompatActivity() {
     }
     override fun onStart() {
         super.onStart()
+        if (isFirstRun()) {
+            // show app intro
+            val i = Intent(this, MainIntroActivity::class.java)
+            startActivity(i)
+            consumeFirstRun()
+        }
+        if (!haveNetworkConnection()){
+            startActivity((Intent(this, MainActivity::class.java)))
+            finish()
+        }
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = auth.currentUser
         updateUI(currentUser)
     }
+/*    private fun openActivityForResult(intent1: Intent){
+        startForResult.launch(intent1)
+    }
+    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        result:ActivityResult->
+        if(result.resultCode == Activity.RESULT_OK){
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                val account = task.getResult(ApiException::class.java)!!
+                Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
+                firebaseAuthWithGoogle(account.idToken!!)
+            } catch (e: ApiException) {
+                // Google Sign In failed, update UI appropriately
+                Log.w(TAG, "Google sign in failed", e)
+            }
+        }
+    }*/
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -156,6 +184,25 @@ class LoginActivity : AppCompatActivity() {
         startActivity((Intent(this, MainActivity::class.java)))
 
         finish()
+    }
+    private fun haveNetworkConnection():Boolean{
+        var haveConnectedWifi = false
+        var haveConnectedMobile = false
+        val cm =  getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val netInfo = cm.allNetworkInfo
+        for(i in netInfo){
+            if(i.typeName.equals("WIFI",true)){
+                if(i.isConnected){
+                    haveConnectedWifi =true
+                }
+            }
+            if(i.typeName.equals("MOBILE",true)){
+                if(i.isConnected){
+                    haveConnectedMobile =true
+                }
+            }
+        }
+        return haveConnectedMobile||haveConnectedWifi
     }
     private fun isFirstRun() = preferencesPrivate.getBoolean(Constants.FIRST_RUN_OF_LOGIN, true)
 

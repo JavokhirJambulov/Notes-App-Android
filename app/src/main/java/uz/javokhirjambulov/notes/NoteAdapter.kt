@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import uz.javokhirjambulov.notes.database.Note
 import java.text.SimpleDateFormat
 import java.util.*
+import uz.javokhirjambulov.notes.R;
 import kotlin.collections.ArrayList
 
 class UsersDiffCallback(
@@ -129,7 +130,6 @@ class NoteAdapter(
         val toDoText = holder.itemView.context.resources.getString(R.string.todo_text)
         val importantText = holder.itemView.context.resources.getString(R.string.important_text)
         val ideaText = holder.itemView.context.resources.getString(R.string.idea_text)
-
         // What is the status of the note?
         when {
 
