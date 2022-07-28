@@ -2,31 +2,16 @@
     <string name="app_name">Notes</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title" translatable="false">Android Studio</string>
+    <string name="nav_header_subtitle" translatable="false">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="action_sign_in" translatable="false">Sign in or register</string>
+    <string name="action_sign_in_short" translatable="false">Sign in</string>
+    <string name="welcome">Welcome!</string>
     <string name="login_failed">"Login failed"</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="action_add">add</string>
-
     <string name="title_hint">Title</string>
     <string name="description_hint">Description</string>
     <string name="idea_text">Idea</string>
@@ -34,15 +19,13 @@
     <string name="todo_text">To do</string>
     <string name="idea_todo">Idea | Todo</string>
     <string name="idea_important">Important | Idea</string>
-    <string name="todo_important">Important | To do</string>
+    <string name="todo_important">Important | Todo</string>
     <string name="idea_todo_important">Important | Todo | Idea</string>
     <string name="cancel_button">Cancel</string>
     <string name="ok_button">OK</string>
     <string name="settings_title">Settings</string>
     <string name="add_new_note">Add a new note</string>
     <string name="your_note">Saved note</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="note_type">Note Type</string>
     <string name="note_title">Note Title</string>
     <string name="note_description">Note Description</string>
@@ -55,7 +38,6 @@
     <string name="title">Title</string>
     <string name="signup">SignUp</string>
     <string name="username">Username</string>
-    <string name="deletedNotes">Deleted Notes</string>
     <string name="deleted_notes">Deleted Notes</string>
     <string name="settings">Settings</string>
     <string name="cloud_backup">Cloud Backup</string>
@@ -76,4 +58,25 @@
     <string name="organize_your_ideas">Organize your ideas</string>
     <string name="write_down_your_thoughts">Write down your ideas to keep everything on track.</string>
     <string name="login">Login</string>
+    <string name="no_net_no_upload">Cannot upload to the cloud, because you are not connected to Internet!</string>
+    <string name="no_signin_no_upload">Cannot upload to the cloud, because you are not signed in!</string>
+    <string name="no_net_no_import">Cannot import from the cloud, because you are not connected to Internet!</string>
+    <string name="no_signin_no_import">Cannot import from the cloud, because you are not signed in!</string>
+    <string name="is_deleted">\" is deleted\"</string>
+    <string name="undo">Undo</string>
+    <string name="type_ur_search">Type here to search for notes!</string>
+    <string name="first_login">First Log In to your Google Account</string>
+    <string name="enter_title">Please, enter Title!</string>
+    <string name="enter_description">Please, enter Description!</string>
+    <string name="select_note_type">Please select at least one type of the Note!</string>
+    <string name="is_deleted_permanently">\" is deleted permanently!\"</string>
+    <string name="to_get_started_sign_in_with_google">To get started, sign in with Google!</string>
+    <string name="skip">Skip</string>
+    <string name="share">Share</string>
+    <string name="edit">Edit</string>
+    <string name="btncancel">btnCancel</string>
+    <string name="email">Email</string>
+    <string name="use_one_account_everywhere">Sign in with your Google account</string>
+    <string name="multiple_phone">"Use one account on every device with cloud storage. "</string>
+    <string name="swipe_to_delete">Swipe the note to the left to delete!</string>
 </resources>

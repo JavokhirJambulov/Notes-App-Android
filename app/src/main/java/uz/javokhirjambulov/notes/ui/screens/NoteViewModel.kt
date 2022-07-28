@@ -60,14 +60,7 @@ class NoteViewModel(private val noteDatabase: NoteDatabase) : ViewModel() {
         }
     }
 
-    /* // Method #2
-     fun delete(note: Note,context: Context) {
-         viewModelScope.launch(Dispatchers.IO) {
-             noteDatabase.noteDao().deleteById(note.noteId)
-         }
-     }*/
-
-    // Method #3
+    // Method #2
     fun deleteById(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -132,12 +125,8 @@ class NoteViewModel(private val noteDatabase: NoteDatabase) : ViewModel() {
     suspend fun getNoteWithID(id: String): Note? {
         var note: Note?
         note = withContext(Dispatchers.IO) {
-
             noteDatabase.noteDao().getNoteWithId(id)
-            //Log.i("Tag","note inside viewmodel ${note1.title}")
-
         }
-        Log.i("Tag", "note inside viewmodel ${note.title}")
         return note
 
     }

@@ -2,7 +2,6 @@
 
 package uz.javokhirjambulov.notes
 
-//import android.annotation.SuppressLint
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -15,34 +14,34 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.core.view.MenuItemCompat
 import androidx.core.view.isVisible
-import androidx.drawerlayout.widget.DrawerLayout
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 import uz.javokhirjambulov.notes.commons.Constants
 import uz.javokhirjambulov.notes.database.DeletedNoteDatabase
 import uz.javokhirjambulov.notes.database.Note
 import uz.javokhirjambulov.notes.database.NoteDatabase
+import uz.javokhirjambulov.notes.databinding.ActivityMainBinding
 import uz.javokhirjambulov.notes.login.LoginActivity
-import uz.javokhirjambulov.notes.ui.*
+import uz.javokhirjambulov.notes.ui.DeletedNotesActivity
+import uz.javokhirjambulov.notes.ui.DeletedNotesViewModel
+import uz.javokhirjambulov.notes.ui.DeletedNotesViewModelFactory
+import uz.javokhirjambulov.notes.ui.Settings
 import uz.javokhirjambulov.notes.ui.screens.NewNoteActivity
 import uz.javokhirjambulov.notes.ui.screens.NoteViewModel
 import uz.javokhirjambulov.notes.ui.screens.NoteViewModelFactory
@@ -50,33 +49,23 @@ import uz.javokhirjambulov.notes.ui.screens.ShowNoteActivity
 import java.util.*
 
 
-private const val TAG = ""
-
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     NoteAdapter.ItemListener {
     private lateinit var auth: FirebaseAuth
-    private lateinit var drawerLayout: DrawerLayout
-    private var recyclerView: RecyclerView? = null
     private val adapter: NoteAdapter by lazy {
         NoteAdapter(this)
     }
-    private lateinit var fab:FloatingActionButton
-    private lateinit var imageUser: ImageView
-    private lateinit var txtUserName: TextView
-    private lateinit var txtEmail: TextView
     private lateinit var preferencesPrivate: SharedPreferences
     private lateinit var noteViewModel:NoteViewModel
     private lateinit var deletedNoteViewModel:DeletedNotesViewModel
-
-
+    private lateinit var binding: ActivityMainBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        setSupportActionBar(binding.appBarMain.toolbar)
         preferencesPrivate = this.getSharedPreferences(
             this.packageName + "_private_preferences",
             Context.MODE_PRIVATE
@@ -87,65 +76,55 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             startActivity(i)
             yesUserIn()
         }
-        noteViewModel = ViewModelProvider(this,  NoteViewModelFactory(NoteDatabase.getDataBase()))[NoteViewModel::class.java]
-        deletedNoteViewModel = ViewModelProvider(this,DeletedNotesViewModelFactory(DeletedNoteDatabase.getDataBase()))[DeletedNotesViewModel::class.java]
-
-
-
-        auth = Firebase.auth
-
-
-        fab = findViewById(R.id.fab)
-        fab.setOnClickListener {
-            val intent =  Intent(this, NewNoteActivity::class.java)
-            startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-//            //hide the keyboard
-//            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//            imm.hideSoftInputFromWindow(fab.windowToken,0)
-
-        }
-
-        drawerLayout = findViewById(R.id.drawer_layout)
-        val navView: NavigationView = findViewById(R.id.nav_view)
-        val header = navView.getHeaderView(0)
-        imageUser = header.findViewById(R.id.imageUser)
-        txtUserName = header.findViewById(R.id.txtUserName)
-        txtEmail = header.findViewById(R.id.txtEmail)
-
-        val toggle = ActionBarDrawerToggle(
-            this,
-            drawerLayout,
-            toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        )
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-        navView.setNavigationItemSelectedListener(this)
-
-        recyclerView = findViewById<View>(R.id.recyclerView) as RecyclerView
-        recyclerView?.adapter = adapter
+        val header = binding.navView.getHeaderView(0)
+        val imageUser = header.findViewById(R.id.imageUser) as ImageView
+        val txtUserName = header.findViewById(R.id.txtUserName)as TextView
+        val txtEmail = header.findViewById(R.id.txtEmail)as TextView
         val user = Firebase.auth.currentUser
         user?.let {
             // Name, email address, and profile photo Url
             txtUserName.text = user.displayName
             txtEmail.text = user.email
-            Glide.with(this).load(user.photoUrl).into(imageUser)
+            Glide.with(this).load(user.photoUrl).circleCrop().into(imageUser)
+        }
+        noteViewModel = ViewModelProvider(this,  NoteViewModelFactory(NoteDatabase.getDataBase()))[NoteViewModel::class.java]
+        deletedNoteViewModel = ViewModelProvider(this,DeletedNotesViewModelFactory(DeletedNoteDatabase.getDataBase()))[DeletedNotesViewModel::class.java]
+
+        auth = Firebase.auth
+
+        binding.appBarMain.fab.setOnClickListener {
+            val intent =  Intent(this, NewNoteActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        }
+
+
+        val toggle = ActionBarDrawerToggle(
+            this,
+            binding.drawerLayout,
+            binding.appBarMain.toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
+        binding.drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+        binding.navView.setNavigationItemSelectedListener(this)
+
+        binding.appBarMain.recyclerView.recyclerView.adapter = adapter
+        if(firstRun()&&adapter.itemCount>0){
+            Snackbar.make(binding.root,getString(R.string.swipe_to_delete),Snackbar.LENGTH_LONG).show()
+            finishFirstRun()
         }
         when {
             isNewFirst() -> {
                 noteViewModel.new()
-                //newFirst.isChecked = true
             }
             isOldFirst()->{
                 noteViewModel.old()
-                //oldFirst.isChecked = true
 
             }
             isTitleFirst()->{
                 noteViewModel.title()
-                //titleFirst.isChecked = true
             }
         }
 
@@ -161,7 +140,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         adapter.setNote(it)
                     }
                 }
-                recyclerView!!.smoothSnapToPosition(0)
+                binding.appBarMain.recyclerView.recyclerView.smoothSnapToPosition(0)
             }
         }
         noteViewModel.mOld.observe(this){it->
@@ -176,7 +155,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         adapter.setNote(it)
                     }
                 }
-                recyclerView!!.smoothSnapToPosition(0)
+                binding.appBarMain.recyclerView.recyclerView.smoothSnapToPosition(0)
 
             }
         }
@@ -192,15 +171,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         adapter.setNote(it)
                     }
                 }
-                recyclerView!!.smoothSnapToPosition(0)
+                binding.appBarMain.recyclerView.recyclerView.smoothSnapToPosition(0)
             }
         }
         adapter.registerAdapterDataObserver( object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
                 super.onItemRangeMoved(fromPosition, toPosition, itemCount)
-                //lifecycleScope.launch(Dispatchers.IO){
-                 recyclerView!!.smoothSnapToPosition(0)
-                //}
+                binding.appBarMain.recyclerView.recyclerView.smoothSnapToPosition(0)
             }
         })
 
@@ -210,30 +187,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             @SuppressLint("NotifyDataSetChanged")
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 when (direction) {
-                    ItemTouchHelper.RIGHT -> {
-                        /*    val archiveItem = adapter?.getItem(viewHolder.adapterPosition)
-                            //createNewNote(archiveItem!!)*/
-
-                    }
                     ItemTouchHelper.LEFT -> {
                         val position = viewHolder.adapterPosition
                         val deletedItem = adapter.getItem(position)
-                        //adapter.deleteNote(position)
                         deleteFromDatabase(deletedItem)
-                        //createDeletedNotesDatabase(adapter.getItem(position))
-                        //recyclerView!!.recycledViewPool.clear()
-                        //adapter.notifyDataSetChanged()
 
                         Snackbar.make(
-                            recyclerView!!,
-                            "${deletedItem.title.toString()} is deleted",
+                            binding.appBarMain.recyclerView.recyclerView,
+                            deletedItem.title.toString() + getString(R.string.is_deleted),
                             Snackbar.LENGTH_LONG
                         )
-                            .setAction("Undo") {
+                            .setAction(getString(R.string.undo)) {
                                 // adding on click listener to our action of snack bar.
                                 // below line is to add our item to array list with a position.
-
-                                //deletedItem.let { it1 -> adapter.addNote(position, it1) }
                                 insertToDatabase(deletedItem)
 
                             }.addCallback(object : Snackbar.Callback() {
@@ -264,31 +230,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         }
         val touchHelper = ItemTouchHelper(swipeGesture)
-        touchHelper.attachToRecyclerView(recyclerView)
+        touchHelper.attachToRecyclerView(binding.appBarMain.recyclerView.recyclerView)
 
-        recyclerView?.itemAnimator = DefaultItemAnimator()
-        // Add a neat dividing line between items in the list
+        binding.appBarMain.recyclerView.recyclerView.itemAnimator = DefaultItemAnimator()
 
 
         displayScreen(-1)
 
-
     }
 
     private fun insertToDatabase(deletedNote: Note) {
-//        myRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId).removeValue()
         noteViewModel.insert(deletedNote)
     }
 
     private fun deleteFromDatabase(deletedNote: Note) {
-//        myRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId).removeValue()
         noteViewModel.deleteById(deletedNote.noteId)
     }
 
     private fun createDeletedNotesDatabase(deletedNote: Note) {
-
-//        myDeletedNotesRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId)
-//            .setValue(deletedNote)
         deletedNoteViewModel.insert(deletedNote)
     }
 
@@ -307,8 +266,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
     override fun onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START)
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
         }
@@ -320,7 +279,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         menuInflater.inflate(R.menu.main, menu)
         val menuItem = menu.findItem(R.id.search)
         val searchView = menuItem.actionView as SearchView
-        searchView.queryHint = "Type here to search for notes!"
+        searchView.queryHint = getString(R.string.type_ur_search)
         searchView.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
@@ -329,6 +288,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             @SuppressLint("NotifyDataSetChanged")
             override fun onQueryTextChange(newText: String?): Boolean {
                 val tempArr = ArrayList<Note>()
+
                 noteViewModel.getAllNotesByIdNew().observe(this@MainActivity){ listOfNotes ->
                     for (arr in listOfNotes) {
                         if (arr.title!!.toLowerCase(Locale.getDefault()).contains(newText.toString())||arr.description!!.toLowerCase(Locale.getDefault()).contains(newText.toString())) {
@@ -347,12 +307,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             menuItem,
             object : MenuItemCompat.OnActionExpandListener {
                 override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                    fab.isVisible = false
+                    binding.appBarMain.fab.isVisible = false
                     return true
                 }
 
                 override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                    fab.isVisible = true
+                    binding.appBarMain.fab.isVisible = true
                     return true
                 }
             })
@@ -398,10 +358,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 preferencesPrivate.edit().putBoolean(Constants.new, true).apply()
                 notOldFirst()
                 notTitleFirst()
-                //lifecycleScope.launch(Dispatchers.IO){
-                   // recyclerView!!.smoothSnapToPosition(0)
-                //}
-                //sortNewestDate()
                 return true
             }
             R.id.mOldFirst -> {
@@ -426,17 +382,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             R.id.mLogOut -> {
                 if(auth.currentUser!=null){
-                Toast.makeText(this, "Log Out", Toast.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root, getString(R.string.log_out), Snackbar.LENGTH_LONG).show()
                 auth.signOut()
                 val logoutIntent = Intent(this, LoginActivity::class.java)
                 logoutIntent.flags =
                     Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-               //preferencesPrivate.edit().putBoolean(Constants.FIRST_RUN, true).apply()
                 startActivity(logoutIntent)
                 finish()
                 }
                 else{
-                    Toast.makeText(this, "First Log In to your Google Account", Toast.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root, getString(R.string.first_login), Snackbar.LENGTH_LONG).show()
                 }
                 return true
             }
@@ -458,7 +413,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(Intent(this, Settings::class.java))
             }
             R.id.signIn->{
-                startActivity(Intent(this, LoginActivity::class.java))
+                val logoutIntent = Intent(this, LoginActivity::class.java)
+                logoutIntent.flags =
+                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(logoutIntent)
+                finish()
             }
         }
     }
@@ -468,7 +427,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         displayScreen(item.itemId)
 
-        drawerLayout.closeDrawer(GravityCompat.START)
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
     fun RecyclerView.smoothSnapToPosition(position: Int, snapMode: Int = LinearSmoothScroller.SNAP_TO_START) {
@@ -487,7 +446,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun yesUserIn() =
         preferencesPrivate.edit().putBoolean(Constants.USER_LOGGED_IN, false).apply()
+    private fun firstRun() = preferencesPrivate.getBoolean(Constants.FIRST_RUN, true)
 
+    private fun finishFirstRun() =
+        preferencesPrivate.edit().putBoolean(Constants.FIRST_RUN, false).apply()
     private fun isTitleFirst() = preferencesPrivate.getBoolean(Constants.title,false)
     private fun isOldFirst() = preferencesPrivate.getBoolean(Constants.old,true)
     private fun isNewFirst() = preferencesPrivate.getBoolean(Constants.new,false)

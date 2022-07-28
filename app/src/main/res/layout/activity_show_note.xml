@@ -21,8 +21,8 @@
                 android:padding="5sp"
                 android:text="@string/your_note"
                 android:textAlignment="center"
-                android:textColor="@color/black"
                 android:textSize="18sp"
+                android:textColor="?attr/colorSecondaryVariant"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
@@ -34,13 +34,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:src="@drawable/ic_back"
                 app:layout_constraintBottom_toBottomOf="@+id/tvtitle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/black" />
+                app:tint="?attr/colorSecondaryVariant"
+                android:contentDescription="@string/btncancel" />
 
             <TextView
                 android:id="@+id/tvDate"
@@ -50,8 +50,8 @@
                 android:gravity="center"
                 android:padding="5sp"
                 android:text="@string/date"
+                android:textColor="?attr/colorSecondaryVariant"
                 android:textAlignment="center"
-                android:textColor="@color/black"
                 android:textSize="13sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -78,12 +78,13 @@
                     android:layout_marginBottom="5dp"
                     android:layout_weight="0.5"
                     android:src="@drawable/ic_share"
-                    app:tint="@color/white" />
+                    app:tint="@color/white"
+                    android:contentDescription="@string/share" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Share"
+                    android:text="@string/share"
                     android:gravity="center_vertical"
                     android:layout_weight="0.9"
                     android:textColor="@color/white"
@@ -112,12 +113,13 @@
                     android:layout_marginBottom="5dp"
                     android:layout_weight="0.5"
                     android:src="@drawable/ic_edit"
-                    app:tint="@color/white" />
+                    app:tint="@color/white"
+                    android:contentDescription="@string/edit" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Edit"
+                    android:text="@string/edit"
                     android:gravity="center_vertical"
                     android:layout_weight="0.9"
                     android:textColor="@color/white"
@@ -174,26 +176,12 @@
                 android:paddingRight="15dp"
                 android:scrollbars="vertical"
                 android:text="@string/note_title"
+                android:textColor="?attr/colorSecondaryVariant"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView3" />
-
-            <!-- <Button
-                android:id="@+id/btnOK"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="20dp"
-                android:text="@string/ok_button"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtDescription"
-                app:layout_constraintVertical_bias="0.0" />-->
 
 
             <TextView
@@ -208,7 +196,6 @@
                 android:text="@string/note_description"
                 android:textSize="18sp"
                 android:textStyle="normal"
-                android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView4" />

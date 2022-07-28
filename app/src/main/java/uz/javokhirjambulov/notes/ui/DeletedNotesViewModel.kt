@@ -87,7 +87,6 @@ class DeletedNotesViewModel(private val deletedNoteDatabase: DeletedNoteDatabase
             //Log.i("Tag","note inside viewmodel ${note1.title}")
 
         }
-        Log.i("Tag", "note inside deleted viewmodel ${note.title}")
         return note
 
     }

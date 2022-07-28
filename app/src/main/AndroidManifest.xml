@@ -35,7 +35,7 @@
 
         <activity android:name=".ui.DeletedNotesActivity"
             android:parentActivityName=".MainActivity"
-            android:label="@string/deletedNotes"
+            android:label="@string/deleted_notes"
             android:theme="@style/Theme.Notes.ActionBar"
             android:screenOrientation="sensorPortrait">
         </activity>

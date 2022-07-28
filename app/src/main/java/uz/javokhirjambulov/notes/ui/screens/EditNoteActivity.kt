@@ -44,21 +44,12 @@ class EditNoteActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("Tag", "Oncreate of editnote")
         noteViewModel = ViewModelProvider(this,  NoteViewModelFactory(NoteDatabase.getDataBase()))[NoteViewModel::class.java]
         val b = intent.extras
         value = "" // or other values
 
         if (b != null)
             value = b.getString("key").toString()
-
-     /*   user = Firebase.auth.currentUser!!
-        user.let {
-
-            uid = user.uid
-        }
-        database = Firebase.database
-        myRef = database.getReference("Notes")*/
 
 
         binding = DataBindingUtil.setContentView(
@@ -70,18 +61,6 @@ class EditNoteActivity : AppCompatActivity() {
         sendNoteSelected(value)
 
 
-//        editNote?.noteId.let { it1 ->
-//            Log.d("TAG","in edit note => ${System.currentTimeMillis()}");
-//            if (it1 != null) {
-//                Log.i("Tag", "This is note title: "+editNote?.title.toString())
-//                binding.editTitle.setText(editNote?.title)
-//                binding.editDescription.setText(editNote?.description)
-//                binding.checkBoxIdea.isChecked = editNote?.idea == true
-//                binding.checkBoxTodo.isChecked = editNote?.todo == true
-//                binding.checkBoxImportant.isChecked = editNote?.important == true
-//
-//            }
-//        }
         // Handle the cancel button
         binding.btnCancel.setOnClickListener {
             editNote?.let { it1 -> startShowActivity(it1.noteId) }
@@ -126,29 +105,6 @@ class EditNoteActivity : AppCompatActivity() {
     }
     // Receive a note from the MainActivity class
     private fun sendNoteSelected(value: String) {
-
-
-//        myRef.child(uid.toString()).child(value.toString()).addValueEventListener(object :
-//                ValueEventListener {
-//                override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                    val note = Note(value)
-//                    note?.description = dataSnapshot.child("description").getValue<String>()
-//                    note?.title = dataSnapshot.child("title").getValue<String>()
-//                    note?.idea = dataSnapshot.child("idea").getValue<Boolean>()
-//                    note?.important = dataSnapshot.child("important").getValue<Boolean>()
-//                    note?.todo = dataSnapshot.child("todo").getValue<Boolean>()
-//
-//                    Log.i("Tag", note?.description.toString())
-//                    setNote(note)
-//
-//                }
-//
-//
-//                override fun onCancelled(error: DatabaseError) {
-//                    // Failed to read value
-//                    Log.w("TAG", "Failed to read value.", error.toException())
-//                }
-//                })
         lifecycleScope.launch(Dispatchers.IO){
             Log.i("Tag","note${noteViewModel.getNoteWithID(value)}")
             noteViewModel.getNoteWithID(value)?.let { setNote(it) }
@@ -162,7 +118,6 @@ class EditNoteActivity : AppCompatActivity() {
 
         editNote?.noteId.let { it1 ->
             if (it1 != null) {
-                Log.i("Tag", "This is note title: "+editNote?.title.toString())
                 val outputDataFormat= SimpleDateFormat("dd-MM-yyyy", Locale.US)
                 val calendar: Calendar = Calendar.getInstance()
                 calendar.timeInMillis = it1.toLong()
@@ -175,7 +130,6 @@ class EditNoteActivity : AppCompatActivity() {
 
             }
         }
-
     }
     override fun onBackPressed() {
         super.onBackPressed()

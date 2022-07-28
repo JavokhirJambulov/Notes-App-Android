@@ -1,6 +1,6 @@
 package uz.javokhirjambulov.notes
 
-import android.os.Build
+import android.animation.ObjectAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import uz.javokhirjambulov.notes.database.Note
 import java.text.SimpleDateFormat
 import java.util.*
-import uz.javokhirjambulov.notes.R;
-import kotlin.collections.ArrayList
+
 
 class UsersDiffCallback(
     private val oldList: List<Note>,
@@ -72,18 +71,6 @@ class NoteAdapter(
         notifyItemRangeChanged(adapterPosition, itemCount)
 
     }
-//    fun sort(comparator: Comparator<Note>) {
-//        this.comparator=comparator
-//        val noteListSorted= ArrayList(noteList)
-//        noteListSorted.sortWith(comparator)
-//        val diffCallback=UsersDiffCallback(noteList,noteListSorted)
-//        val diffResult=DiffUtil.calculateDiff(diffCallback)
-//        //noteList.clear()
-//        noteList=noteListSorted
-//
-//        diffResult.dispatchUpdatesTo(this)
-//
-//    }
 
 
 
@@ -99,8 +86,6 @@ class NoteAdapter(
 
     override fun getItemCount(): Int {
         return noteList.size
-        /*// error
-        return -1*/
     }
 
 
@@ -108,29 +93,17 @@ class NoteAdapter(
 
 
         val note = noteList[position]
-        /* if (note.title?.length!! > 30) {
-             holder.mTitle.text = note.title?.substring(0,30)
-         }else{*/
         holder.mTitle.text = note.title
-        //}
-        // Show the first 30 characters of the actual note
-        /* if (note.description!!.length > 30) {
-             holder.mDescription.text =
-                     note.description?.substring(0, 30)
-         } else {*/
         holder.mDescription.text = note.description
-
         val outputDataFormat = SimpleDateFormat("MMM dd, yyyy", Locale.US)
         val calendar: Calendar = Calendar.getInstance()
         calendar.timeInMillis = note.noteId.toLong()
         holder.mDate.text = outputDataFormat.format(calendar.time)
 
 
-        //}
         val toDoText = holder.itemView.context.resources.getString(R.string.todo_text)
         val importantText = holder.itemView.context.resources.getString(R.string.important_text)
         val ideaText = holder.itemView.context.resources.getString(R.string.idea_text)
-        // What is the status of the note?
         when {
 
 

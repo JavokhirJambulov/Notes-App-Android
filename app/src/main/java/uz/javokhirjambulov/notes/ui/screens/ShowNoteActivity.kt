@@ -27,8 +27,6 @@ import java.util.*
 class ShowNoteActivity : AppCompatActivity() {
     private var deletedDatabase: Boolean = false
     private lateinit var binding: ActivityShowNoteBinding
-//    private lateinit var myRef: DatabaseReference
-//    private lateinit var auth: FirebaseAuth
 
     private var note: Note? = null
     private lateinit var noteViewModel:NoteViewModel
@@ -37,7 +35,6 @@ class ShowNoteActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("Tag","oncreate of show")
         noteViewModel = ViewModelProvider(this,  NoteViewModelFactory(NoteDatabase.getDataBase()))[NoteViewModel::class.java]
         deletedNoteViewModel = ViewModelProvider(this, DeletedNotesViewModelFactory(
             DeletedNoteDatabase.getDataBase())
@@ -88,8 +85,6 @@ class ShowNoteActivity : AppCompatActivity() {
 
         }
 
-
-
     }
 
     private fun startDeletedNotesActivity() {
@@ -108,40 +103,14 @@ class ShowNoteActivity : AppCompatActivity() {
     // Receive a note from the MainActivity class
    fun sendNoteSelected(value: String, deletedDatabase: Boolean) {
 
-//        myRef.child(auth.currentUser?.uid.toString()).child(value.toString()).addValueEventListener(object :
-//            ValueEventListener {
-//            override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                val note = Note(value)
-//                note?.description = dataSnapshot.child("description").getValue<String>()
-//                note?.title = dataSnapshot.child("title").getValue<String>()
-//                note?.idea = dataSnapshot.child("idea").getValue<Boolean>()
-//                note?.important = dataSnapshot.child("important").getValue<Boolean>()
-//                note?.todo = dataSnapshot.child("todo").getValue<Boolean>()
-//
-//                Log.i("Tag", note?.description.toString())
-//                setNote(note)
-//
-//            }
-//
-//
-//            override fun onCancelled(error: DatabaseError) {
-//                // Failed to read value
-//                Log.w("TAG", "Failed to read value.", error.toException())
-//            }
-//        })
-        //Log.i("Tag","deleted note${deletedNoteViewModel.getNoteWithID(value,applicationContext)}")
-
-        //Log.i("Tag","note ${noteViewModel.getNoteWithID(value,applicationContext)}")
             if(deletedDatabase){
                 lifecycleScope.launch(Dispatchers.IO){
-                Log.i("Tag","deleted note${deletedNoteViewModel.getNoteWithID(value)}")
                 setNote(deletedNoteViewModel.getNoteWithID(value))
                 }
 
             }
             else{
                 lifecycleScope.launch(Dispatchers.IO){
-                Log.i("Tag","note${noteViewModel.getNoteWithID(value)?.title}")
                 noteViewModel.getNoteWithID(value)?.let { setNote(it) }
                 }
             }
@@ -153,7 +122,6 @@ class ShowNoteActivity : AppCompatActivity() {
     private fun setNote(note11: Note) {
         this.note = note11
 
-        Log.i("Tag","note in set note ${note?.title}")
 
             binding.txtTitle.text = note?.title
             binding.txtTitle.movementMethod = ScrollingMovementMethod()

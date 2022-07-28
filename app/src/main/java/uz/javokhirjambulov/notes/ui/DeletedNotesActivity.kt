@@ -32,40 +32,10 @@ class DeletedNotesActivity : AppCompatActivity(), NoteAdapter.ItemListener {
         setContentView(R.layout.deleted_notes)
         deletedNoteViewModel = ViewModelProvider(this,DeletedNotesViewModelFactory(
             DeletedNoteDatabase.getDataBase()))[DeletedNotesViewModel::class.java]
-
-//        auth = Firebase.auth
-//        val database = Firebase.database
-//        myRef = database.getReference("DeletedNotes")
         val recyclerViewDeletedNotes = findViewById<RecyclerView>(R.id.recyclerViewDeletedNotes)
 
 
         recyclerViewDeletedNotes.adapter = adapter
-//        myRef.child(auth.currentUser?.uid.toString()).addValueEventListener(object :
-//                ValueEventListener {
-//            override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                val noteList1: MutableList<Note> = mutableListOf()
-//
-//                for (postSnapshot in dataSnapshot.children) {
-//                    //getNote = Note()
-//                    val noteId = postSnapshot.key.toString()
-//                    val note = Note(noteId)
-//                    note.description = postSnapshot.child("description").getValue<String>()
-//                    note.title = postSnapshot.child("title").getValue<String>()
-//                    note.idea = postSnapshot.child("idea").getValue<Boolean>()
-//                    note.important = postSnapshot.child("important").getValue<Boolean>()
-//                    note.todo = postSnapshot.child("todo").getValue<Boolean>()
-//
-//                    noteList1.add(note)
-//                }
-//                adapter.setNote(noteList1)
-//            }
-//
-//
-//            override fun onCancelled(error: DatabaseError) {
-//                // Failed to read value
-//                Log.w("TAG", "Failed to read value.", error.toException())
-//            }
-//        })
         deletedNoteViewModel.getAllNotes().observe(this) { lisOfNotes ->
             lisOfNotes?.let {
                 adapter.setNote(it)
@@ -87,11 +57,9 @@ class DeletedNotesActivity : AppCompatActivity(), NoteAdapter.ItemListener {
                         val deletedItem = adapter.getItem(position)
                         //adapter.deleteNote(position)
                         deleteFromDeletedNotesDatabase(deletedItem)
-                        Snackbar.make(recyclerViewDeletedNotes!!, "${deletedItem.title.toString()} is deleted", Snackbar.LENGTH_LONG)
-                                .setAction("Undo") {
-                                    // adding on click listener to our action of snack bar.
-                                    // below line is to add our item to array list with a position.
-
+                        Snackbar.make(recyclerViewDeletedNotes!!,
+                            deletedItem.title.toString() + getString(R.string.is_deleted), Snackbar.LENGTH_LONG)
+                                .setAction(getString(R.string.undo)) {
                                    insertToDatabase(deletedItem)
 
 
@@ -99,51 +67,29 @@ class DeletedNotesActivity : AppCompatActivity(), NoteAdapter.ItemListener {
                                     override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                                         super.onDismissed(transientBottomBar, event)
                                         if (event != DISMISS_EVENT_ACTION) {
-                                            // Snackbar closed on its own
-                                            Toast.makeText(applicationContext, "${deletedItem.title.toString()} is deleted permanently!", Toast.LENGTH_SHORT).show()
-
+                                            Toast.makeText(applicationContext,
+                                                deletedItem.title.toString() + getString(R.string.is_deleted_permanently), Toast.LENGTH_SHORT).show()
                                         }
                                     }
-
                                     override fun onShown(sb: Snackbar?) {
                                         super.onShown(sb)
 
                                     }
                                 }).show()
-
-
                     }
                 }
-
-
             }
-
         }
         val touchHelper = ItemTouchHelper(swipeGesture)
         touchHelper.attachToRecyclerView(recyclerViewDeletedNotes)
 
 
     }
-
-  /*  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                val myIntent = Intent(applicationContext, MainActivity::class.java)
-                startActivity(myIntent)
-                return true
-            }
-        }
-        return true
-
-    }*/
     private fun insertToDatabase(deletedNote: Note) {
-//        myRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId).removeValue()
       deletedNoteViewModel.insert(deletedNote)
     }
 
     private fun deleteFromDeletedNotesDatabase(deletedNote: Note) {
-
-//        myRef.child(auth.currentUser?.uid.toString()).child(deletedNote.noteId).removeValue()
         deletedNoteViewModel.deleteById(deletedNote.noteId)
     }
 

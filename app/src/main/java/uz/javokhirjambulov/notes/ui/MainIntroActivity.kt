@@ -27,6 +27,16 @@ class MainIntroActivity: IntroActivity() {
         )
         addSlide(
             SimpleSlide.Builder()
+                .title(R.string.use_one_account_everywhere)
+                .description(R.string.multiple_phone)
+                .image(R.drawable.intro5)
+                .background(R.color.grey50)
+                .backgroundDark(R.color.grey50)
+                .layout(R.layout.activity_main_intro)
+                .build()
+        )
+        addSlide(
+            SimpleSlide.Builder()
                 .title(R.string.simple_to_use)
                 .description(R.string.easy_to_navigate)
                 .image(R.drawable.intro2)

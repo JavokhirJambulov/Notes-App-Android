@@ -13,6 +13,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -73,18 +74,18 @@ class Settings : AppCompatActivity() {
 
         binding.expCloud.setOnClickListener {
             if (!haveNetworkConnection()){
-                Toast.makeText(
-                    applicationContext,
-                    "Cannot upload to cloud, because you are not connected to Internet!",
-                    Toast.LENGTH_SHORT
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.no_net_no_upload),
+                    Snackbar.LENGTH_LONG
                 ).show()
                 return@setOnClickListener
             }
             else if(auth.currentUser ==null){
-                Toast.makeText(
-                    applicationContext,
-                    "Cannot upload to cloud, because you are not signed in!",
-                    Toast.LENGTH_SHORT
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.no_signin_no_upload),
+                    Snackbar.LENGTH_LONG
                 ).show()
 
             }
@@ -153,18 +154,18 @@ class Settings : AppCompatActivity() {
 //            var finished = false
 //            if (!finished) {
             if (!haveNetworkConnection()){
-                Toast.makeText(
-                    applicationContext,
-                    "Cannot import from the cloud, because you are not connected to Internet!",
-                    Toast.LENGTH_SHORT
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.no_net_no_import),
+                    Snackbar.LENGTH_LONG
                 ).show()
                 return@setOnClickListener
             }
             else if(auth.currentUser ==null){
-                Toast.makeText(
-                    applicationContext,
-                    "Cannot import from the cloud, because you are not signed in!",
-                    Toast.LENGTH_SHORT
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.no_signin_no_import),
+                    Snackbar.LENGTH_LONG
                 ).show()
 
             }else {

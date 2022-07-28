@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
@@ -75,16 +76,16 @@ class NewNoteActivity : AppCompatActivity() {
             // user's entries on the form
             when {
                 TextUtils.isEmpty(binding.editTitle.text.toString()) -> {
-                    binding.editTitle.error = "Please, enter Title!"
+                    binding.editTitle.error = getString(R.string.enter_title)
                 }
                 TextUtils.isEmpty(binding.editDescription.text.toString()) -> {
-                    binding.editDescription.error = "Please, enter Description!"
+                    binding.editDescription.error = getString(R.string.enter_description)
                 }
                 !binding.checkBoxIdea.isChecked && !binding.checkBoxTodo.isChecked && !binding.checkBoxImportant.isChecked -> {
-                    Toast.makeText(
-                        applicationContext,
-                        "Please select at least one type of the Note!",
-                        Toast.LENGTH_SHORT
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.select_note_type),
+                        Snackbar.LENGTH_LONG
                     ).show()
                 }
                 else -> {
