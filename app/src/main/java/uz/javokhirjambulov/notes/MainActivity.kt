@@ -14,6 +14,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -191,6 +192,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         val position = viewHolder.adapterPosition
                         val deletedItem = adapter.getItem(position)
                         deleteFromDatabase(deletedItem)
+                        binding.appBarMain.recyclerView.recyclerView.clearOnScrollListeners()
 
                         Snackbar.make(
                             binding.appBarMain.recyclerView.recyclerView,
@@ -382,7 +384,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             R.id.mLogOut -> {
                 if(auth.currentUser!=null){
-                    Snackbar.make(binding.root, getString(R.string.log_out), Snackbar.LENGTH_LONG).show()
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.log_out),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 auth.signOut()
                 val logoutIntent = Intent(this, LoginActivity::class.java)
                 logoutIntent.flags =

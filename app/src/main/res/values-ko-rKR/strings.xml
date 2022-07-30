@@ -76,4 +76,9 @@
     <string name="use_one_account_everywhere">Google 계정에 로그인하십시오</string>
     <string name="multiple_phone">클라우드 스토리지가있는 모든 장치에서 하나의 계정을 사용하십시오.</string>
     <string name="swipe_to_delete">메모를 왼쪽으로 스와이프하여 삭제하세요!</string>
+    <string name="delete_account">Google 계정 삭제</string>
+    <string name="account_deleted">클라우드의 모든 계정 정보 및 데이터가 삭제됩니다!</string>
+    <string name="do_you_want_delete">클라우드에서 Google 계정을 제거 하시겠습니까?</string>
+    <string name="all_notes_will_be_deleted">클라우드 스토리지의 모든 메모도 삭제됩니다!</string>
+    <string name="no_signedin_account">계정에 서명되지 않았습니다!</string>
 </resources>

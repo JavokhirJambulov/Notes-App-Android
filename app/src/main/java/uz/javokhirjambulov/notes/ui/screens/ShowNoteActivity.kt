@@ -47,9 +47,6 @@ class ShowNoteActivity : AppCompatActivity() {
             deletedDatabase = b.getBoolean("deletedNotesDatabase")
         }
 
-        /*auth = Firebase.auth
-        val database = Firebase.database
-        myRef = database.getReference("Notes")*/
         binding = DataBindingUtil.setContentView(
             this,
             R.layout.activity_show_note
@@ -59,11 +56,6 @@ class ShowNoteActivity : AppCompatActivity() {
             binding.btnEdit.visibility=View.GONE
 
         sendNoteSelected(value,deletedDatabase)
-
-
-
-
-
 
 
         binding.btnCancel.setOnClickListener {
@@ -90,18 +82,18 @@ class ShowNoteActivity : AppCompatActivity() {
     private fun startDeletedNotesActivity() {
         val intent = Intent(this, DeletedNotesActivity::class.java)
         this.startActivity(intent)
-        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left)
     }
 
     private fun startMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         this.startActivity(intent)
-        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left)
     }
 
 
     // Receive a note from the MainActivity class
-   fun sendNoteSelected(value: String, deletedDatabase: Boolean) {
+    private fun sendNoteSelected(value: String, deletedDatabase: Boolean) {
 
             if(deletedDatabase){
                 lifecycleScope.launch(Dispatchers.IO){
@@ -111,24 +103,18 @@ class ShowNoteActivity : AppCompatActivity() {
             }
             else{
                 lifecycleScope.launch(Dispatchers.IO){
-                noteViewModel.getNoteWithID(value)?.let { setNote(it) }
+                    setNote(noteViewModel.getNoteWithID(value))
                 }
             }
-
-
-
 
     }
     private fun setNote(note11: Note) {
         this.note = note11
 
-
             binding.txtTitle.text = note?.title
             binding.txtTitle.movementMethod = ScrollingMovementMethod()
-
             binding.txtDescription.text = note?.description
             binding.txtDescription.movementMethod = ScrollingMovementMethod()
-
 
             val outputDataFormat= SimpleDateFormat("dd-MM-yyyy", Locale.US)
             val calendar: Calendar = Calendar.getInstance()
@@ -150,9 +136,6 @@ class ShowNoteActivity : AppCompatActivity() {
                 note?.let { it1 -> editNote(it1) }
             }
 
-
-
-
     }
     private fun editNote(note: Note) {
         val intent =  Intent(this, EditNoteActivity::class.java)
@@ -161,7 +144,7 @@ class ShowNoteActivity : AppCompatActivity() {
 
         intent.putExtras(b) //Put your id to your next Intent
         startActivity(intent)
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
     override fun onBackPressed() {
         super.onBackPressed()
@@ -169,6 +152,6 @@ class ShowNoteActivity : AppCompatActivity() {
             startDeletedNotesActivity()
         }else
             startMainActivity()
-        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left)
     }
 }

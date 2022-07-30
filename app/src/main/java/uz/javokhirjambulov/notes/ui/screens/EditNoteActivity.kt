@@ -33,10 +33,6 @@ import java.util.*
 class EditNoteActivity : AppCompatActivity() {
 
     private lateinit var value: String
-//    private lateinit var uid: String
-//    private lateinit var user: FirebaseUser
-//    private lateinit var myRef: DatabaseReference
-//    private lateinit var database: FirebaseDatabase
     private lateinit var binding: ActivityNewNoteBinding
     private lateinit var noteViewModel:NoteViewModel
     private var editNote: Note? = null
@@ -101,13 +97,13 @@ class EditNoteActivity : AppCompatActivity() {
         intent.putExtras(b) //Put your id to your next Intent
 
         startActivity(intent)
-        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left)
     }
     // Receive a note from the MainActivity class
     private fun sendNoteSelected(value: String) {
         lifecycleScope.launch(Dispatchers.IO){
             Log.i("Tag","note${noteViewModel.getNoteWithID(value)}")
-            noteViewModel.getNoteWithID(value)?.let { setNote(it) }
+            setNote(noteViewModel.getNoteWithID(value))
         }
 
     }
@@ -133,7 +129,7 @@ class EditNoteActivity : AppCompatActivity() {
     }
     override fun onBackPressed() {
         super.onBackPressed()
-        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left)
     }
 
 }

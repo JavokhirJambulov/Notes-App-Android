@@ -76,4 +76,9 @@
     <string name="use_one_account_everywhere">अपने गूगल खाते के साथ साइन इन करें</string>
     <string name="multiple_phone">क्लाउड स्टोरेज के साथ प्रत्येक डिवाइस पर एक खाते का उपयोग करें।</string>
     <string name="swipe_to_delete">नोट को हटाने के लिए बाईं ओर स्वाइप करें!</string>
+    <string name="delete_account">Google खाता हटाएं</string>
+    <string name="account_deleted">क्लाउड पर सभी खाता जानकारी और डेटा हटा दिया जाता है!</string>
+    <string name="do_you_want_delete">क्या आप अपने Google खाते को क्लाउड से निकालना चाहते हैं?</string>
+    <string name="all_notes_will_be_deleted">क्लाउड स्टोरेज पर आपके सभी नोट भी हटा दिए जाएंगे!</string>
+    <string name="no_signedin_account">खाते में हस्ताक्षरित नहीं!</string>
 </resources>

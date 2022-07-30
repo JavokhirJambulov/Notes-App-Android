@@ -76,4 +76,9 @@
     <string name="use_one_account_everywhere">Google hisobingiz bilan tizimga kiring</string>
     <string name="multiple_phone">Bulutli saqlash bilan har bir qurilmada bitta hisobdan foydalaning.</string>
     <string name="swipe_to_delete">Yo\'q qilish uchun eslatmani chapga suring!</string>
+    <string name="delete_account">Google Akkauntni o\'chirish</string>
+    <string name="account_deleted">Barcha hisob ma\'lumotlari va bulutdagi ma\'lumotlar o\'chirilgan!</string>
+    <string name="do_you_want_delete">Google hisobingizni bulutdan olib tashlamoqchimisiz?</string>
+    <string name="all_notes_will_be_deleted">Bulutli omborxonadagi barcha eslatmalar ham o\'chiriladi!</string>
+    <string name="no_signedin_account">Akkauntga kirilmagan!</string>
 </resources>

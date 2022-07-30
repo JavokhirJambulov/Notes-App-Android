@@ -2,6 +2,7 @@ package uz.javokhirjambulov.notes.ui
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Uri
@@ -10,19 +11,18 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import uz.javokhirjambulov.notes.MainActivity
 import uz.javokhirjambulov.notes.R
 import uz.javokhirjambulov.notes.commons.Constants
@@ -31,9 +31,10 @@ import uz.javokhirjambulov.notes.database.DeletedNoteDatabase
 import uz.javokhirjambulov.notes.database.Note
 import uz.javokhirjambulov.notes.database.NoteDatabase
 import uz.javokhirjambulov.notes.databinding.ActivitySettingsBinding
+import uz.javokhirjambulov.notes.login.LoginActivity
 import uz.javokhirjambulov.notes.ui.screens.NoteViewModel
 import uz.javokhirjambulov.notes.ui.screens.NoteViewModelFactory
-import java.lang.Exception
+
 
 @Suppress("DEPRECATION")
 class Settings : AppCompatActivity() {
@@ -112,8 +113,6 @@ class Settings : AppCompatActivity() {
                     }
                     }
 
-
-
                 deletedNoteViewModel.getAllNotes().observe(this) { lisOfNotes ->
                     lisOfNotes?.let {
                             for (i in it) {
@@ -137,7 +136,6 @@ class Settings : AppCompatActivity() {
                             }
                     }
                 }
-
                     Toast.makeText(
                         applicationContext,
                         getString(R.string.uploadedToCloudToast),
@@ -146,13 +144,9 @@ class Settings : AppCompatActivity() {
                 }catch (e:Exception){
                     noteViewModel.setErrorMessage(e.toString())
                 }
-
-                // startMainActivity()
             }
         }
         binding.impCloud.setOnClickListener {
-//            var finished = false
-//            if (!finished) {
             if (!haveNetworkConnection()){
                 Snackbar.make(
                     binding.root,
@@ -187,12 +181,124 @@ class Settings : AppCompatActivity() {
             val i = Intent(this, MainIntroActivity::class.java)
             startActivity(i)
         }
+        binding.deleteAccount.setOnClickListener {
+            if(auth.currentUser ==null){
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.no_signedin_account),
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+            else if (auth.currentUser != null) {
+                AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.do_you_want_delete))
+                    .setMessage(getString(R.string.all_notes_will_be_deleted))
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(
+                        android.R.string.yes
+                    ) { _, _ ->
+                        deleteDatabase()
+                        deleteDeletedDatabase()
+                        deleteAccount()
+
+
+                        // Continue with delete operation
+                    } // A null listener allows the button to dismiss the dialog and take no further action.
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .create()
+                    .show()
+            }
+        }
 
 
 
     }
+    private fun deleteDatabase() {
+        if (auth.currentUser == null) {
+            Snackbar.make(
+                binding.root,
+                getString(R.string.no_signin_no_upload),
+                Snackbar.LENGTH_LONG
+            ).show()
+        } else{
+            myRef.child(auth.currentUser?.uid.toString()).removeValue()
+                .addOnCompleteListener {
+                    if (it.isComplete) {
+                        Log.i("TAG", "Info deleted from cloud")
+                    }
+                }
+            }
+    }
+    private fun deleteDeletedDatabase(){
+        if(auth.currentUser ==null){
+            Snackbar.make(
+                binding.root,
+                getString(R.string.no_signin_no_upload),
+                Snackbar.LENGTH_LONG
+            ).show()
+        }
+        else {
+            myDeletedNotesRef.child(auth.currentUser?.uid.toString()).removeValue()
+                .addOnCompleteListener {
+                    if (it.isComplete) {
+                        Log.i("TAG", "del Info deleted from cloud")
+                    }
+                }
+        }
+    }
+    private fun deleteAccount() {
+        if(auth.currentUser ==null){
+            Snackbar.make(
+                binding.root,
+                getString(R.string.no_signin_no_upload),
+                Snackbar.LENGTH_LONG
+            ).show()
+        }
+        else if (auth.currentUser != null) {
+            //You need to get here the token you saved at logging-in time.
+            val token = "userSavedToken"
 
-    var progressDialog: AlertDialog? = null
+            //Doesn't matter if it was Facebook Sign-in or others. It will always work using GoogleAuthProvider for whatever the provider.
+            val credential:AuthCredential = GoogleAuthProvider.getCredential(token, null)
+
+
+            //We have to reauthenticate user because we don't know how long
+            //it was the sign-in. Calling reauthenticate, will update the
+            //user login and prevent FirebaseException (CREDENTIAL_TOO_OLD_LOGIN_AGAIN) on user.delete()
+            auth.currentUser!!.reauthenticate(credential)
+                .addOnCompleteListener {
+                    //Calling delete to remove the user and wait for a result.
+
+                    auth.currentUser!!.delete().addOnCompleteListener { p0 ->
+                        if (p0.isSuccessful) {
+                            Log.i("TAG", "account Info deleted from cloud")
+                            Toast.makeText(
+                            applicationContext,
+                                getString(R.string.account_deleted),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            val logoutIntent = Intent(this, LoginActivity::class.java)
+                            logoutIntent.flags =
+                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(logoutIntent)
+                            finish()
+                            //Ok, user remove
+                        } else {
+                            //Handle the exception
+                            p0.exception
+                        }
+                    }
+                }
+//        auth.currentUser!!.delete().addOnCompleteListener {
+//            if(it.isComplete){
+//
+//            }
+//        }
+        }
+    }
+    private var progressDialog: AlertDialog? = null
     private fun initObjects() {
         noteViewModel.progress.observe(this) {
             if (it == true) {

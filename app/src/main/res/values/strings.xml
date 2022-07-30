@@ -79,4 +79,9 @@
     <string name="use_one_account_everywhere">Sign in with your Google account</string>
     <string name="multiple_phone">"Use one account on every device with cloud storage. "</string>
     <string name="swipe_to_delete">Swipe the note to the left to delete!</string>
+    <string name="delete_account">Delete Google Account</string>
+    <string name="account_deleted">All account info and data on cloud is deleted!</string>
+    <string name="do_you_want_delete">Do you want to remove your Google Account from cloud?</string>
+    <string name="all_notes_will_be_deleted">All your notes on the cloud storage will be deleted too!</string>
+    <string name="no_signedin_account">No signed in account!</string>
 </resources>

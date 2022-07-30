@@ -1,13 +1,10 @@
 package uz.javokhirjambulov.notes.ui.screens
 
-import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uz.javokhirjambulov.notes.database.Note
@@ -16,12 +13,12 @@ import uz.javokhirjambulov.notes.database.NoteDatabase
 class NoteViewModel(private val noteDatabase: NoteDatabase) : ViewModel() {
 
     //Database Operations in view model
-    private val _mTitle = MutableLiveData<Boolean>(false)
+    private val _mTitle = MutableLiveData(false)
     val mTitle: LiveData<Boolean> get() = _mTitle
-    private val _mOld = MutableLiveData<Boolean>(false)
+    private val _mOld = MutableLiveData(false)
     val mOld: LiveData<Boolean> get() = _mOld
 
-    private val _mNew = MutableLiveData<Boolean>(false)
+    private val _mNew = MutableLiveData(false)
     val mNew: LiveData<Boolean> get() = _mNew
 
     private val _errorMessage = MutableLiveData<String>()
@@ -48,7 +45,6 @@ class NoteViewModel(private val noteDatabase: NoteDatabase) : ViewModel() {
         _mNew.value = true
     }
 
-    // Method #1
     fun insert(note: Note, onDoneFunction: (() -> Unit)? = null) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -60,7 +56,6 @@ class NoteViewModel(private val noteDatabase: NoteDatabase) : ViewModel() {
         }
     }
 
-    // Method #2
     fun deleteById(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -85,7 +80,6 @@ class NoteViewModel(private val noteDatabase: NoteDatabase) : ViewModel() {
     }
 
 
-    // Method #4
     fun update(note: Note) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -101,7 +95,6 @@ class NoteViewModel(private val noteDatabase: NoteDatabase) : ViewModel() {
 
     }
 
-    // Method #5
     fun getAllNotes(): LiveData<List<Note>> {
         return noteDatabase.noteDao().getAllNotes()
 
@@ -122,8 +115,8 @@ class NoteViewModel(private val noteDatabase: NoteDatabase) : ViewModel() {
 
     }
 
-    suspend fun getNoteWithID(id: String): Note? {
-        var note: Note?
+    suspend fun getNoteWithID(id: String): Note {
+        val note: Note?
         note = withContext(Dispatchers.IO) {
             noteDatabase.noteDao().getNoteWithId(id)
         }

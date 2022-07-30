@@ -162,6 +162,24 @@
             android:textColor="?attr/colorSecondaryVariant"
             android:textSize="18sp"
             app:layout_constraintTop_toBottomOf="@id/expCloud"/>
+        <View
+            android:id="@+id/view1"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="10dp"
+            android:background="#c0c0c0"
+            app:layout_constraintTop_toBottomOf="@id/impCloud" />
+        <TextView
+            android:id="@+id/deleteAccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:layout_marginTop="15dp"
+            android:text="@string/delete_account"
+            android:textColor="?attr/colorSecondaryVariant"
+            android:textSize="18sp"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/view1"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

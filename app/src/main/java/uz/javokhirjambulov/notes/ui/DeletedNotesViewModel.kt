@@ -21,7 +21,6 @@ class DeletedNotesViewModel(private val deletedNoteDatabase: DeletedNoteDatabase
 
     private val _progress = MutableLiveData<Boolean>()
     val progress: LiveData<Boolean> get() = _progress
-    // Method #1
     fun insert(note: Note) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -37,15 +36,6 @@ class DeletedNotesViewModel(private val deletedNoteDatabase: DeletedNoteDatabase
     private fun setProgress(b: Boolean) {
         _progress.postValue(b)
     }
-
-    // Method #2
-//    fun delete(note: Note, context: Context) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            DeletedNoteDatabase.getDataBase(context).noteDao().deleteById(note.noteId)
-//        }
-//    }
-
-    // Method #3
     fun deleteById(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -59,7 +49,6 @@ class DeletedNotesViewModel(private val deletedNoteDatabase: DeletedNoteDatabase
         }
     }
 
-    // Method #4
     fun update(note: Note) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -74,18 +63,12 @@ class DeletedNotesViewModel(private val deletedNoteDatabase: DeletedNoteDatabase
         }
     }
 
-    // Method #5
     fun getAllNotes(): LiveData<List<Note>> {
         return deletedNoteDatabase.noteDao().getAllNotes()
-
     }
-
     suspend fun getNoteWithID(id: String): Note {
         val note: Note = withContext(Dispatchers.IO) {
-
             deletedNoteDatabase.noteDao().getNoteWithId(id)
-            //Log.i("Tag","note inside viewmodel ${note1.title}")
-
         }
         return note
 

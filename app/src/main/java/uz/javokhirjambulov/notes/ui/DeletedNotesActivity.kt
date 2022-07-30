@@ -47,11 +47,6 @@ class DeletedNotesActivity : AppCompatActivity(), NoteAdapter.ItemListener {
             @Suppress("DEPRECATION")
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 when (direction) {
-                    ItemTouchHelper.RIGHT -> {
-                        /*   val archiveItem = adapter?.getItem(viewHolder.adapterPosition)
-                           //createNewNote(archiveItem!!)*/
-
-                    }
                     ItemTouchHelper.LEFT -> {
                         val position = viewHolder.adapterPosition
                         val deletedItem = adapter.getItem(position)
@@ -111,6 +106,6 @@ class DeletedNotesActivity : AppCompatActivity(), NoteAdapter.ItemListener {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+        overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left)
     }
 }

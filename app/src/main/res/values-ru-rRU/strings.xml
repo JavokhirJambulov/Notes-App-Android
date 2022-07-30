@@ -76,4 +76,9 @@
     <string name="use_one_account_everywhere">Войдите в свой аккаунт Google</string>
     <string name="multiple_phone">Используйте одну учетную запись на каждом устройстве с облачным хранилищем.</string>
     <string name="swipe_to_delete">Проведите заметку влево, чтобы удалить!</string>
+    <string name="delete_account">Удалить аккаунт Google</string>
+    <string name="account_deleted">Вся информация об учетной записи и данные на облаке удалена!</string>
+    <string name="do_you_want_delete">Вы хотите удалить свою учетную запись Google из облака?</string>
+    <string name="all_notes_will_be_deleted">Все ваши заметки на облачном хранилище тоже будут удалены!</string>
+    <string name="no_signedin_account">Не подписано в учетной записи!</string>
 </resources>

@@ -49,14 +49,6 @@ class NewNoteActivity : AppCompatActivity() {
             R.layout.activity_new_note
         )
         binding.lifecycleOwner = this
-
-//        user = Firebase.auth.currentUser!!
-//        user?.let {
-//
-//            uid = user.uid
-//        }
-        /*database = Firebase.database
-        myRef = database.getReference("Notes")*/
         val currentTime = System.currentTimeMillis()
         val outputDataFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
         val calendar: Calendar = Calendar.getInstance()
@@ -98,13 +90,9 @@ class NewNoteActivity : AppCompatActivity() {
                     newNote.important = binding.checkBoxImportant.isChecked
 
 
-//            myRef.child(uid).child(newNote.noteId).setValue(newNote)
                     noteViewModel.insert(newNote, onDoneFunction = {
                         startMainActivity()
                     })
-                    //val callingActivity=activity as MainActivity?
-                    //callingActivity?.addNote(newNote)
-
                 }
             }
         }
