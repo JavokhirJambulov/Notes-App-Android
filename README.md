@@ -9,9 +9,11 @@ Simple Notes is a small and fast notetaking app for making notes, memos, or just
 <table>
 <tbody>
 <tr>
-<td> <img src="app/src/main/res/drawable/add.gif" width="150" ></td>
-<td> <img src="app/src/main/res/drawable/edit2.gif" width="150" ></td>
-<td> <img src="app/src/main/res/drawable/delete.gif" width="150" ></td>
+<td> <img src="app/src/main/res/drawable/Google%20Pixel%204%20XL%20Screenshot%200.png" width="150" ></td>
+<td> <img src="app/src/main/res/drawable/Google%20Pixel%204%20XL%20Screenshot%201.png" width="150" ></td>
+<td> <img src="app/src/main/res/drawable/Google%20Pixel%204%20XL%20Screenshot%202.png" width="150" ></td>
+<td> <img src="app/src/main/res/drawable/Google%20Pixel%204%20XL%20Screenshot%203.png" width="150" ></td>
+<td> <img src="app/src/main/res/drawable/Google%20Pixel%204%20XL%20Screenshot%204.png" width="150" ></td>
 </tr>
 </tbody>
 </table>
