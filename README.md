@@ -61,4 +61,4 @@ A: Go to the settings and press the delete account button!
 ## Suggestions, questions, contact
 For any suggestions or questions, feel free to contact me by email: javohirjambulov@gmail.com
 ## Licence
-Goodtime is free and open source software, [licensed](https://github.com/JavokhirJambulov/Pomodo-App-Android/blob/main/LICENSE) under the Apache License, Version 2.0.
+Simple Notes is free and open source software, [licensed](https://github.com/JavokhirJambulov/Pomodo-App-Android/blob/main/LICENSE) under the Apache License, Version 2.0.
