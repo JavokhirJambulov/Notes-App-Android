@@ -47,14 +47,14 @@ A: Go to the settings and press the delete account button!
 
 ## Features of this app:
 <ul>
-  <li>• No ads</li>
-<li>• Open-source</li>
-<li>• Lightweight</li>
-<li>• Supports four languages: English, Korean, Hindi, and Uzbek</li>
-<li>• Easy to open and edit your notes.</li>
-<li>• Easy to delete/re-edit.</li>
-<li>• Save Notes with One Touch.</li>
-<li>• Share your notes via e-mail, SMS, etc.</li>
+  <li> No ads</li>
+<li> Open-source</li>
+<li> Lightweight</li>
+<li> Supports four languages: English, Korean, Hindi, and Uzbek</li>
+<li> Easy to open and edit your notes.</li>
+<li> Easy to delete/re-edit.</li>
+<li> Save Notes with One Touch.</li>
+<li> Share your notes via e-mail, SMS, etc.</li>
   </ul>
 
 
