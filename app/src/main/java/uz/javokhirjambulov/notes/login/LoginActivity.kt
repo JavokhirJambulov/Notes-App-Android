@@ -43,12 +43,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         supportActionBar?.hide()
-
-
-//        email= findViewById(R.id.email)
-//        password=findViewById(R.id.password)
-//        btnLogin=findViewById(R.id.btnLogin)
-//        btnSignUp=findViewById(R.id.btnSignUp)
         btnGoogleSignIn=findViewById(R.id.btnGoogleSingIn)
         skip = findViewById(R.id.textViewSkip)
         preferencesPrivate = this.getSharedPreferences(
