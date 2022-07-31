@@ -46,14 +46,16 @@ Q: How do you delete the Google account from the cloud?
 A: Go to the settings and press the delete account button!
 
 ## Features of this app:
-• No ads
-• Open-source
-• Lightweight
-• Supports four languages: English, Korean, Hindi, and Uzbek
-• Easy to open and edit your notes.
-• Easy to delete/re-edit.
-• Save Notes with One Touch.
-• Share your notes via e-mail, SMS, etc.
+<ul>
+  <li>• No ads</li>
+<li>• Open-source</li>
+<li>• Lightweight</li>
+<li>• Supports four languages: English, Korean, Hindi, and Uzbek</li>
+<li>• Easy to open and edit your notes.</li>
+<li>• Easy to delete/re-edit.</li>
+<li>• Save Notes with One Touch.</li>
+<li>• Share your notes via e-mail, SMS, etc.</li>
+  </ul>
 
 
 ## Suggestions, questions, contact
