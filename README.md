@@ -9,11 +9,11 @@ Simple Notes is a small and fast notetaking app for making notes, memos, or just
 <table>
 <tbody>
 <tr>
-<td> <img src="app/src/main/res/drawable/Google%20Pixel%204%20XL%20Screenshot%200.png" width="150" ></td>
-<td> <img src="app/src/main/res/drawable/Google%20Pixel%204%20XL%20Screenshot%201.png" width="150" ></td>
-<td> <img src="app/src/main/res/drawable/Google%20Pixel%204%20XL%20Screenshot%202.png" width="150" ></td>
-<td> <img src="app/src/main/res/drawable/Google%20Pixel%204%20XL%20Screenshot%203.png" width="150" ></td>
-<td> <img src="app/src/main/res/drawable/Google%20Pixel%204%20XL%20Screenshot%204.png" width="150" ></td>
+<td> <img src="app/src/main/res/drawable/google_pixel_4_xl_screenshot_0.png" width="150" ></td>
+<td> <img src="app/src/main/res/drawable/google_pixel_4_xl_screenshot_1.png" width="150" ></td>
+<td> <img src="app/src/main/res/drawable/google_pixel_4_xl_screenshot_2.png" width="150" ></td>
+<td> <img src="app/src/main/res/drawable/google_pixel_4_xl_screenshot_3.png" width="150" ></td>
+<td> <img src="app/src/main/res/drawable/google_pixel_4_xl_screenshot_4.png" width="150" ></td>
 </tr>
 </tbody>
 </table>
