@@ -31,6 +31,14 @@
           }
         },
         {
+          "client_id": "98135370923-rpeh15hfmba1nepm57dvf7gqohrcfsh8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "uz.javokhirjambulov.notes",
+            "certificate_hash": "267fc621b42d80e7b838eca1f13cf088cb70a79a"
+          }
+        },
+        {
           "client_id": "98135370923-q3b5oiktounqgit0abaj0jlo999uf78i.apps.googleusercontent.com",
           "client_type": 3
         }
