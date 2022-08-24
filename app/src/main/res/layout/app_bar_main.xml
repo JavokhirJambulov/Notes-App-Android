@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 <androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -22,7 +23,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include android:id="@+id/recyclerView"
+    <include android:id="@+id/recyclerViewLayout"
         layout="@layout/content_main" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

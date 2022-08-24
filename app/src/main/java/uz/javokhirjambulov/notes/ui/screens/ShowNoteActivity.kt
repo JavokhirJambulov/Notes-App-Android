@@ -109,7 +109,8 @@ class ShowNoteActivity : AppCompatActivity() {
 
     }
     private fun setNote(note11: Note) {
-        this.note = note11
+        lifecycleScope.launch(Dispatchers.Main){
+        note = note11
 
             binding.txtTitle.text = note?.title
             binding.txtTitle.movementMethod = ScrollingMovementMethod()
@@ -135,6 +136,7 @@ class ShowNoteActivity : AppCompatActivity() {
             binding.btnEdit.setOnClickListener{
                 note?.let { it1 -> editNote(it1) }
             }
+        }
 
     }
     private fun editNote(note: Note) {

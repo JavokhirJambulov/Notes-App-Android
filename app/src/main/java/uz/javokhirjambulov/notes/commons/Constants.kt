@@ -12,4 +12,5 @@ object Constants {
     // Source code
     const val sourceCodeURL: String = "https://github.com/JavokhirJambulov/Notes-App-Android"
     const val feedbackURL = "mailto:javohirjambulov@gmail.com?subject=Feedback about %s"
+    const val appURL = "https://play.google.com/store/apps/details?id=uz.javokhirjambulov.notes"
 }

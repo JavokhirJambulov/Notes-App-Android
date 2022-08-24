@@ -33,6 +33,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.suddenh4x.ratingdialog.AppRating
+import com.suddenh4x.ratingdialog.preferences.RatingThreshold
 import uz.javokhirjambulov.notes.commons.Constants
 import uz.javokhirjambulov.notes.database.DeletedNoteDatabase
 import uz.javokhirjambulov.notes.database.Note
@@ -43,10 +45,7 @@ import uz.javokhirjambulov.notes.ui.DeletedNotesActivity
 import uz.javokhirjambulov.notes.ui.DeletedNotesViewModel
 import uz.javokhirjambulov.notes.ui.DeletedNotesViewModelFactory
 import uz.javokhirjambulov.notes.ui.Settings
-import uz.javokhirjambulov.notes.ui.screens.NewNoteActivity
-import uz.javokhirjambulov.notes.ui.screens.NoteViewModel
-import uz.javokhirjambulov.notes.ui.screens.NoteViewModelFactory
-import uz.javokhirjambulov.notes.ui.screens.ShowNoteActivity
+import uz.javokhirjambulov.notes.ui.screens.*
 import java.util.*
 
 
@@ -111,9 +110,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
         binding.navView.setNavigationItemSelectedListener(this)
 
-        binding.appBarMain.recyclerView.recyclerView.adapter = adapter
+        AppRater.appLaunched(this);
+
+        binding.appBarMain.recyclerViewLayout.recyclerView.adapter = adapter
         if(firstRun()&&adapter.itemCount>0){
-            Snackbar.make(binding.root,getString(R.string.swipe_to_delete),Snackbar.LENGTH_LONG).show()
+            Snackbar.make(binding.appBarMain.coordinatorLayout,getString(R.string.swipe_to_delete),Snackbar.LENGTH_LONG).show()
             finishFirstRun()
         }
         when {
@@ -141,7 +142,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         adapter.setNote(it)
                     }
                 }
-                binding.appBarMain.recyclerView.recyclerView.smoothSnapToPosition(0)
+                binding.appBarMain.recyclerViewLayout.recyclerView.smoothSnapToPosition(0)
             }
         }
         noteViewModel.mOld.observe(this){it->
@@ -156,7 +157,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         adapter.setNote(it)
                     }
                 }
-                binding.appBarMain.recyclerView.recyclerView.smoothSnapToPosition(0)
+                binding.appBarMain.recyclerViewLayout.recyclerView.smoothSnapToPosition(0)
 
             }
         }
@@ -172,13 +173,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         adapter.setNote(it)
                     }
                 }
-                binding.appBarMain.recyclerView.recyclerView.smoothSnapToPosition(0)
+                binding.appBarMain.recyclerViewLayout.recyclerView.smoothSnapToPosition(0)
             }
         }
         adapter.registerAdapterDataObserver( object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
                 super.onItemRangeMoved(fromPosition, toPosition, itemCount)
-                binding.appBarMain.recyclerView.recyclerView.smoothSnapToPosition(0)
+                binding.appBarMain.recyclerViewLayout.recyclerView.smoothSnapToPosition(0)
             }
         })
 
@@ -192,10 +193,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         val position = viewHolder.adapterPosition
                         val deletedItem = adapter.getItem(position)
                         deleteFromDatabase(deletedItem)
-                        binding.appBarMain.recyclerView.recyclerView.clearOnScrollListeners()
+                        binding.appBarMain.recyclerViewLayout.recyclerView.clearOnScrollListeners()
 
                         Snackbar.make(
-                            binding.appBarMain.recyclerView.recyclerView,
+                            binding.appBarMain.coordinatorLayout,
                             deletedItem.title.toString() + getString(R.string.is_deleted),
                             Snackbar.LENGTH_LONG
                         )
@@ -232,9 +233,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         }
         val touchHelper = ItemTouchHelper(swipeGesture)
-        touchHelper.attachToRecyclerView(binding.appBarMain.recyclerView.recyclerView)
+        touchHelper.attachToRecyclerView(binding.appBarMain.recyclerViewLayout.recyclerView)
 
-        binding.appBarMain.recyclerView.recyclerView.itemAnimator = DefaultItemAnimator()
+        binding.appBarMain.recyclerViewLayout.recyclerView.itemAnimator = DefaultItemAnimator()
 
 
         displayScreen(-1)

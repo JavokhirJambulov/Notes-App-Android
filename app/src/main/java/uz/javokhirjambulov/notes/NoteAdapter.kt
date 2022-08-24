@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -131,6 +132,15 @@ class NoteAdapter(
                 holder.mStatus.text =
                     holder.itemView.context.resources.getString(R.string.note_type)
 
+        }
+
+        if(noteList.size==1){
+            val animationLeft =
+                ObjectAnimator.ofFloat(holder.itemView, "translationX", 0f, -80f, 0f)
+            animationLeft.duration = 2000
+            animationLeft.start()
+//            val animation = AnimationUtils.loadAnimation(holder.itemView.context,R.anim.swipe_animation)
+//            holder.itemView.startAnimation(animation)
         }
 
 
