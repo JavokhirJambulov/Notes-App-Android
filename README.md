@@ -1,7 +1,7 @@
 # Notes-App-Android
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
     alt="Get it on Google Play"
-    height="80">](https://play.google.com/store/apps/details?id=uz.javokhirjambulov.pomodoro)
+    height="80">](https://play.google.com/store/apps/details?id=uz.javokhirjambulov.notes)
     
 Simple Notes is a small and fast notetaking app for making notes, memos, or just any type of text. It gives you a quick and simple notepad editing experience when you write notes, memos, e-mails, messages, and to-do lists.Serving as a simple word processing program, the text option allows for as many characters as you're willing to type. Once saved, you can edit, share, or delete the note by swiping the note to the left.
 # Screenshots :
