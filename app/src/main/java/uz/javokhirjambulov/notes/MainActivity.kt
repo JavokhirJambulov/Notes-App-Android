@@ -47,9 +47,9 @@ import uz.javokhirjambulov.notes.ui.DeletedNotesViewModelFactory
 import uz.javokhirjambulov.notes.ui.Settings
 import uz.javokhirjambulov.notes.ui.screens.*
 import java.util.*
+import androidx.core.content.edit
 
 
-@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     NoteAdapter.ItemListener {
     private lateinit var auth: FirebaseAuth
@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         noteViewModel.mNew.observe(this){it->
             if(it == true){
 
-                preferencesPrivate.edit().putBoolean(Constants.new, true).apply()
+                preferencesPrivate.edit() { putBoolean(Constants.new, true) }
                 notOldFirst()
                 notTitleFirst()
 
@@ -148,7 +148,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         noteViewModel.mOld.observe(this){it->
             if(it == true){
 
-                preferencesPrivate.edit().putBoolean(Constants.old, true).apply()
+                preferencesPrivate.edit() { putBoolean(Constants.old, true) }
                 notNewFirst()
                 notTitleFirst()
 
@@ -164,7 +164,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         noteViewModel.mTitle.observe(this){it->
             if(it == true){
 
-                preferencesPrivate.edit().putBoolean(Constants.title, true).apply()
+                preferencesPrivate.edit() { putBoolean(Constants.title, true) }
                 notOldFirst()
                 notNewFirst()
 
@@ -268,6 +268,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -294,7 +295,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 noteViewModel.getAllNotesByIdNew().observe(this@MainActivity){ listOfNotes ->
                     for (arr in listOfNotes) {
-                        if (arr.title!!.toLowerCase(Locale.getDefault()).contains(newText.toString())||arr.description!!.toLowerCase(Locale.getDefault()).contains(newText.toString())) {
+                        if (arr.title!!.lowercase(Locale.getDefault()).contains(newText.toString())|| arr.description!!.lowercase(
+                                Locale.getDefault()
+                            )
+                                .contains(newText.toString())) {
                             tempArr.add(arr)
                             adapter.setNote(tempArr)
                             adapter.notifyDataSetChanged()

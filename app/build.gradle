@@ -2,25 +2,24 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-parcelize'
-    id 'kotlin-kapt'
+    id("com.google.devtools.ksp") version "2.1.10-1.0.31"
 }
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 32
-    buildToolsVersion "31.0.0"
+    compileSdk 35
 
     defaultConfig {
         applicationId "uz.javokhirjambulov.notes"
-        minSdkVersion 21
-        targetSdkVersion 32
+        minSdkVersion 23
+        targetSdk 35
         versionCode 3
         versionName "1.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildFeatures {
-        //noinspection DataBindingWithoutKapt
         dataBinding true
     }
 
@@ -30,74 +29,81 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    namespace 'uz.javokhirjambulov.notes'
 }
 
 dependencies {
-    def roomVersion = '2.4.0-alpha04'
-    def  viewmodel="2.4.0"
+    def roomVersion = '2.6.1'
+    def viewmodel = '2.8.7'
+    def coroutineVersion = '1.7.3'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.6.0'
-    implementation 'androidx.work:work-runtime-ktx:2.7.0-alpha05'
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
-    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.core:core-ktx:1.15.0'
+    implementation 'androidx.work:work-runtime-ktx:2.10.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+    implementation 'androidx.annotation:annotation:1.9.1'
 
-    //for viewmodel
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    // Lifecycle ViewModel & LiveData
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$viewmodel"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$viewmodel"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$viewmodel"
-    kapt "androidx.lifecycle:lifecycle-compiler:2.2.0"
-
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.room:room-common:2.4.2'
-    implementation 'androidx.room:room-ktx:2.4.2'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    //Room library
+    ksp("androidx.lifecycle:lifecycle-compiler:$viewmodel")
+    // Room Database
     implementation "androidx.room:room-runtime:$roomVersion"
-    // Room components
-    kapt "androidx.room:room-compiler:$roomVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
+    ksp("androidx.room:room-compiler:$roomVersion")
     androidTestImplementation "androidx.room:room-testing:$roomVersion"
 
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
 
-    implementation platform('com.google.firebase:firebase-bom:29.0.3')
+    // Legacy
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
-    // Add the dependency for the Firebase SDK for Google Analytics
-    // When using the BoM, don't specify versions in Firebase dependencies
-    implementation 'com.google.firebase:firebase-analytics-ktx'
+    // Testing
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 
+    // Firebase (using BoM)
+    implementation platform('com.google.firebase:firebase-bom:33.12.0')
 
+    implementation('com.google.firebase:firebase-analytics-ktx') {
+        exclude group: 'com.google.android.play', module: 'core-common'
+    }
+    implementation('com.google.firebase:firebase-auth-ktx') {
+        exclude group: 'com.google.android.play', module: 'core-common'
+    }
+    implementation('com.google.firebase:firebase-database-ktx') {
+        exclude group: 'com.google.android.play', module: 'core-common'
+    }
 
-    // Declare the dependency for the Firebase Authentication library
-    // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation 'com.google.firebase:firebase-auth-ktx'
-    // Also declare the dependency for the Google Play services library and specify its version
-    implementation 'com.google.android.gms:play-services-auth:20.0.1'
+//    implementation("com.google.android.play:core-common:2.0.4")
 
+    // Google Play Services
+    implementation('com.google.android.gms:play-services-auth:21.3.0') {
+        exclude group: 'com.google.android.play', module: 'core-common'
+    }
 
-    // Declare the dependency for the Realtime Database library
-    // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation 'com.google.firebase:firebase-database-ktx'
+    // Glide
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
 
-    implementation 'com.github.bumptech.glide:glide:4.12.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
-
+    // UI Enhancements
     implementation 'com.github.xabaras:RecyclerViewSwipeDecorator:1.3'
-    // Intro
     implementation 'com.heinrichreimersoftware:material-intro:2.0.0'
-    //App review
     implementation 'com.suddenh4x.ratingdialog:awesome-app-rating:2.4.0'
-
-
 }

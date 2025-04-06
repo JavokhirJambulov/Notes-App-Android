@@ -3,13 +3,13 @@ package uz.javokhirjambulov.notes.database
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 
 @Dao
 interface NotesDatabaseDao {
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun save(note: Note)
     /**
      * When updating a row with a value already set in a column,
